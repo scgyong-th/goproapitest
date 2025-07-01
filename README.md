@@ -9,4 +9,4 @@
   * 작업목록 및 대략의 WBS/일정
 
 ## Pilot
-* [Pilot Logs](Pilot_Log.md)
+* [Pilot Logs](Pilot_Logs.md)
