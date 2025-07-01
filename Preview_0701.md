@@ -19,7 +19,7 @@
      |     +-------------------------------> |
      |
      |    +-------------+
-     +--> | Test Server |
+     +--> | Test Server | (7/1 회의후 수정: 서버 별도 구성하지 않음)
           +-------------+
 ```
 
@@ -37,7 +37,8 @@
       - 가격은 대략 인원수x월x$39
       - AllureReport 만은 Open.
     - HTML+JSON 으로 결과 생성
-- Test Server 에 결과 Upload
+- ~~Test Server 에 결과 Upload~~
+     - (7/1 회의후 수정: 서버 별도 구성하지 않음)
 
 ### Android Gateway (AGW)
 - Test Runner 로부터 Test Case 들을 전달받아 BLE/Wifi 통신을 통해 카메라에 전달하는 역할
@@ -64,7 +65,8 @@
       - Test Runner 에 결과 전송
     - 구현량이 많고 AGW 와 Test Device 사이 연결이 불안정해지거나 Test Device 의 AP Mode 해제 등 다수 문제
   
-### Test Server
+### ~~Test Server~~
+- (7/1 회의후 수정: 서버 별도 구성하지 않음)
 - 기능
   - Case 개발 후 배포
   - 결과 취합, 누적, History
@@ -76,9 +78,13 @@
 
 ### PyTest 실행기
 - CLI Based. GUI 기반은 추후 구현
+     - (7/1 회의후 수정)
+     - 설정 화면 반드시 필요함
+     - 설정을 실행기 PC 에서 할지, AGW 에서 할지는 추후 결정.
 - 접속할 기기 정보 설정
-  - `json` 등 설정 파일 활용. GUI 설정 화면은 추후 구현
+  - `json` 등 설정 파일 활용. ~~GUI 설정 화면은 추후 구현~~
 - 서버에서 최신 테스트케이스 확인
+  - (7/1 회의후 수정): Test Runner 배포에 포함
   - 다운로드 및 압축 해제
   - TODO: 위조 방지 암호화
   - 예시
@@ -101,7 +107,8 @@
   - .html, .json 파일 생성
 - Report 서버에 업로드
 
-### Test Server 구현
+### ~~Test Server 구현~~
+- (7/1 회의후 수정: 서버 별도 구성하지 않음)
 - Flask+SQLite 사용
   - 구성
     ```
