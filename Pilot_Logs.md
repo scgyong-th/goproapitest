@@ -15,6 +15,26 @@
   - `asyncstdlib` : Python의 비동기(async) 환경에서 사용하기 좋은 표준 라이브러리 함수들(itertools, functools, operator 등)의 비동기 버전을 모아둔 라이브러리
   - `tinydb` : Python용 경량 NoSQL 데이터베이스. 파일 기반(기본적으로 JSON)이며 별도의 서버 설치 없이도 쉽게 데이터를 저장하고 조회할 수 있음
   - `zeroconf` : 로컬 네트워크 상에서 서비스 자동 발견(서비스 디스커버리)을 구현하는 Python 라이브러리
+- Requirements.txt
+  - `requirements.txt` 파일로 저장한 뒤 `pip install -r requirements.txt` 로 한번에 설치 가능
+
+    ```
+    pytz
+    construct
+    pydantic
+    tzlocal
+    rich
+    requests
+    returns
+    bleak
+    pexpect
+    packaging
+    protobuf
+    wrapt
+    asyncstdlib
+    tinydb
+    zeroconf
+    ```
 
 
 
