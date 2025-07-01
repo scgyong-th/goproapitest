@@ -10,3 +10,4 @@
 
 ## Pilot
 * [Pilot Logs](Pilot_Logs.md)
+  * Pilot 제작을 진행하며 한 일 기록
