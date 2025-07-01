@@ -1,4 +1,4 @@
-# goproapitest
+# GoPro API Test
 
 ## Preparation
 * [Preview 0626](Preview_0626.md)
