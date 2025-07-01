@@ -7,3 +7,6 @@
   * 테스트프레임웍 구조 및 구성요소 스케치
 * [Preview 0703](Preview_0703.md)
   * 작업목록 및 대략의 WBS/일정
+
+## Pilot
+* [Pilot Logs](Pilot_Log.md)
