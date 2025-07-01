@@ -8,6 +8,7 @@
   - UX
   - 기능 명세
   - 통신 Spec 정리
+  - Service/Activity 간 데이터 흐름
 - 구현
   - Device
     - Wi-Fi Scan / List / Select
@@ -20,6 +21,7 @@
   - UI
     - Device/Runner 접속 상태
     - 데이터 흐름
+  - Service
    
 ### Test Runner
 
