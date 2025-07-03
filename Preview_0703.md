@@ -39,12 +39,15 @@
   - 테스트 케이스 관려
     - 테스트 케이스 버전 관리
       - 서버로부터 다운로드 등은 추후 개발
+      - 케이스 루트 폴더를 지정할 수 있는 UI 제공
     - 테스트 케이스들 중 실행할 tree 선택
   - 테스트 진행화면
     - 전체/선택 진행 과정 표시
     - 선택된 테스트케이스의 로그 표시
   - 결과 확인 화면
-    - 테스트 실행 목록
+    - ~~테스트 실행 목록~~
+    - 실행 시각 기반으로 결과 폴더 생성
+    - 결과 폴더를 열어 주는 버튼 정도
     - 선택된 테스트의 결과 화면
       - Test Report 활용 (Allure Report)
 - 
@@ -53,6 +56,10 @@
 
 ### 환경 구축
 - GoPro 카메라 수급
+  - (dongja) 주말 중 구매. 월요일부터 사용 가능하도록 할 예정. 모델명 정해주세요 (hoon)
+- Android 기기 수급
+  - 소하동 사무실에 있는 기기 이용. 모델명 Galaxy J5.
+  - S10 쓸 수도.
 - Git Repo
 
 ### Android Gateway
@@ -70,6 +77,8 @@
   - Settings (?)
 
 ### Test Runner
+- Python 환경에서 `adb` 실행 가능성 확인
+- GUI Toolkit 결정
 - Test Cases
   - Get Camera State
     - Request: `http://10.5.5.9:8080/gopro/camera/state`
