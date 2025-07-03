@@ -81,6 +81,9 @@
   - 호출할 API Server 의 baseurl 을 전달하고 http 연결에 필요한 path, method, args 등을 전달하여 결과 받아오기
   - Request 를 그대로 forward 할 수 있는지 확인
     - 된다면, 일부 테스트는 `노트북 -> 카메라` 로 연결된 상태로도 진행 가능
+    - `Proxy` 라이브러리 중에서는 Android 에서 쓰기 적당한 것이 없음
+    - `NanoHTTPD` 와 `OkHttp` 를 섞어서 비교적 손쉽게 구현 가능
+      - `OkHttp` : Android 에서 사용할 수 있는 Http Client Library
   - GoPro 기기에 연결해서 받아오기
   - `Service` <-> `Activity` 데이터 흐름 보여주기
 
