@@ -1,4 +1,15 @@
-### Logs
+# Pilot Log 7/1
+
+## Logs
+- `main.py` 만들어 실행해본다
+
+    ``` python
+    import open_gopro as gopro
+    print("Done")
+    ```
+  - 설치되지 않는 module 때문에 많은 에러가 나온다
+    
+### GoPro Python API Import
 - python module 설치
   - `pytz` : 시간대(time zone)를 정확하게 처리하기 위한 라이브러리
   - `construct` : 바이너리 데이터 파싱/생성을 쉽게 도와주는 라이브러리
@@ -36,8 +47,42 @@
     zeroconf
     ```
 
+### Android Gateway Pilot
 
+- Kotlin Compose Activity 로 Pilot 시작
+- Service 생성
+  - pilot 이므로 bind 는 하지 않음.
+- Activity 실행시 Service 가 실행되도록 구현
+- NanoHttpd import
+  - ```kotlindsl
+    dependencies {
+    implementation(libs.nanohttpd)
+    ```
 
+  - ```toml
+    [libraries]
+    nanohttpd = { module = "org.nanohttpd:nanohttpd", version = "2.3.1" }
+
+    ```
+- `NanoHTTPD` 상속하여 `SimpleHttpServer` 생성 후 특정 port (5050) listen.
+- Emulator 실행 후 `adb forward tcp:5050 tcp:5050` 실행
+  - Emulator 나 실기기나 동일하게 동작한다고 되어 있으나 아직 실기기에서는 테스트해보지 못함
+  - Emulator 가 종료되기 전까지는 유효. 실기기라면 USB 연결이 끊길때까지 유효
+  - 실행한 후에만 접속이 제대로 되며, `adb forward --remove tcp:5050` 를 한 후에는 연결되지 않는것도 확인
+- Mac Terminal 에서 `curl` 로 결과 받기 성공
+  - ```bash
+    (myenv) scgyong@MBP16:[~]$ curl http://localhost:6502/hello
+    Hello from NanoHTTPD!
+    (myenv) scgyong@MBP16:[~]$ curl http://localhost:6502/hellox
+    404 Not Found
+    (myenv) scgyong@MBP16:[~]$ 
+    ```
+- 이후 테스트
+  - 호출할 API Server 의 baseurl 을 전달하고 http 연결에 필요한 path, method, args 등을 전달하여 결과 받아오기
+  - Request 를 그대로 forward 할 수 있는지 확인
+    - 된다면, 일부 테스트는 `노트북 -> 카메라` 로 연결된 상태로도 진행 가능
+  - GoPro 기기에 연결해서 받아오기
+  - `Service` <-> `Activity` 데이터 흐름 보여주기
 
 
 
