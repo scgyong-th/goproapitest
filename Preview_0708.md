@@ -22,6 +22,8 @@
   - 조건 실행 Filter 없음
   - 결과 기반 자동 등록 없음
   - csv 는 TestSuite 단위로만 export 가능
+  - 마지막 업데이트: 2018년 11월
+  - PHP8 과 호환안됨, PHP7 는 지원 중단됨
 
 ## Allure TestOps
 - 단점: 가격 ($39/월/사용자, Cloud 및 OnPremise 모두 지원)
