@@ -1,0 +1,146 @@
+{
+  "service": [
+    {
+      "uuid": "00002800-0000-1000-8000-00805f9b34fb",
+      "name": "Primary Service"
+    },
+    {
+      "uuid": "00002801-0000-1000-8000-00805f9b34fb",
+      "name": "Secondary Service"
+    },
+    {
+      "uuid": "00001801-0000-1000-8000-00805f9b34fb",
+      "name": "Generic Attribute Service"
+    },
+    {
+      "uuid": "00001800-0000-1000-8000-00805f9b34fb",
+      "name": "Generic Access Service"
+    },
+    {
+      "uuid": "00001804-0000-1000-8000-00805f9b34fb",
+      "name": "Tx Power Service"
+    },
+    {
+      "uuid": "0000180f-0000-1000-8000-00805f9b34fb",
+      "name": "Battery Service"
+    },
+    {
+      "uuid": "0000180a-0000-1000-8000-00805f9b34fb",
+      "name": "Device Information Service"
+    },
+    { "uuid": "b5f90001-aa8d-11e3-9046-0002a5d5c51b", "name": "GoPro Wifi Access Point" },
+    { "uuid": "b5f90090-aa8d-11e3-9046-0002a5d5c51b", "name": "GoPro Camera Management" },
+    { "uuid": "0000fea6-0000-1000-8000-00805f9b34fb", "name": "Control & Query (FEA6)" }
+
+  ],
+  "characteristic": [
+    {
+      "uuid": "00002a00-0000-1000-8000-00805f9b34fb",
+      "name": "Device Name"
+    },
+    {
+      "uuid": "00002a01-0000-1000-8000-00805f9b34fb",
+      "name": "Appearance"
+    },
+    {
+      "uuid": "00002a04-0000-1000-8000-00805f9b34fb",
+      "name": "Preferred Connection Parameters"
+    },
+    {
+      "uuid": "00002aa6-0000-1000-8000-00805f9b34fb",
+      "name": "Central Address Resolution"
+    },
+    {
+      "uuid": "00002a07-0000-1000-8000-00805f9b34fb",
+      "name": "Tx Power Level"
+    },
+    {
+      "uuid": "00002a19-0000-1000-8000-00805f9b34fb",
+      "name": "Battery Level"
+    },
+    {
+      "uuid": "00002a29-0000-1000-8000-00805f9b34fb",
+      "name": "Manufacturer Name"
+    },
+    {
+      "uuid": "00002a24-0000-1000-8000-00805f9b34fb",
+      "name": "Model Number"
+    },
+    {
+      "uuid": "00002a25-0000-1000-8000-00805f9b34fb",
+      "name": "Serial Number"
+    },
+    {
+      "uuid": "00002a26-0000-1000-8000-00805f9b34fb",
+      "name": "Firmware Revision"
+    },
+    {
+      "uuid": "00002a27-0000-1000-8000-00805f9b34fb",
+      "name": "Hardware Revision"
+    },
+    {
+      "uuid": "00002a28-0000-1000-8000-00805f9b34fb",
+      "name": "Software Revision"
+    },
+    {
+      "uuid": "00002a23-0000-1000-8000-00805f9b34fb",
+      "name": "System ID"
+    },
+    {
+      "uuid": "00002a2a-0000-1000-8000-00805f9b34fb",
+      "name": "Certification Data"
+    },
+    {
+      "uuid": "00002a50-0000-1000-8000-00805f9b34fb",
+      "name": "PNP ID"
+    },
+    { "uuid": "b5f90002-aa8d-11e3-9046-0002a5d5c51b", "name": "WiFi AP SSID" },
+    { "uuid": "b5f90003-aa8d-11e3-9046-0002a5d5c51b", "name": "WiFi AP Password" },
+    { "uuid": "b5f90004-aa8d-11e3-9046-0002a5d5c51b", "name": "WiFi AP Power" },
+    { "uuid": "b5f90005-aa8d-11e3-9046-0002a5d5c51b", "name": "WiFi AP State" },
+
+    { "uuid": "b5f90091-aa8d-11e3-9046-0002a5d5c51b", "name": "Network Management Command" },
+    { "uuid": "b5f90092-aa8d-11e3-9046-0002a5d5c51b", "name": "Network Management Response" },
+
+    { "uuid": "b5f90072-aa8d-11e3-9046-0002a5d5c51b", "name": "Command" },
+    { "uuid": "b5f90073-aa8d-11e3-9046-0002a5d5c51b", "name": "Command Response" },
+    { "uuid": "b5f90074-aa8d-11e3-9046-0002a5d5c51b", "name": "Settings" },
+    { "uuid": "b5f90075-aa8d-11e3-9046-0002a5d5c51b", "name": "Settings Response" },
+    { "uuid": "b5f90076-aa8d-11e3-9046-0002a5d5c51b", "name": "Query" },
+    { "uuid": "b5f90077-aa8d-11e3-9046-0002a5d5c51b", "name": "Query Response" }
+  ],
+  "descriptor": [
+    {
+      "uuid": "00002802-0000-1000-8000-00805f9b34fb",
+      "name": "Characteristic Include Descriptor"
+    },
+    {
+      "uuid": "00002803-0000-1000-8000-00805f9b34fb",
+      "name": "Characteristic Declaration"
+    },
+    {
+      "uuid": "00002900-0000-1000-8000-00805f9b34fb",
+      "name": "Characteristic Extended Properties"
+    },
+    {
+      "uuid": "00002901-0000-1000-8000-00805f9b34fb",
+      "name": "Characteristic User Description"
+    },
+    {
+      "uuid": "00002902-0000-1000-8000-00805f9b34fb",
+      "name": "Client Characteristic Configuration"
+    },
+    {
+      "uuid": "00002903-0000-1000-8000-00805f9b34fb",
+      "name": "Server Characteristic Configuration"
+    },
+    {
+      "uuid": "00002904-0000-1000-8000-00805f9b34fb",
+      "name": "Characteristic Format"
+    },
+    {
+      "uuid": "00002905-0000-1000-8000-00805f9b34fb",
+      "name": "Characteristic Aggregate Format"
+    }
+  ]
+}

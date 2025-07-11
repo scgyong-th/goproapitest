@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.xiangatewaypilot.BleScannerVM
 
@@ -20,6 +21,7 @@ import com.example.xiangatewaypilot.BleScannerVM
 fun BleScannerScreen(viewModel: BleScannerVM) {
     val devices by viewModel.devices.collectAsState()
     var isScanning by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Button(
@@ -54,6 +56,15 @@ fun BleScannerScreen(viewModel: BleScannerVM) {
                             style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier.padding(top = 4.dp)
                         )
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Button(
+                        onClick = {
+                            viewModel.connectToDevice(context, device.address)
+                        }
+                    ) {
+                        Text("Connect")
                     }
                 }
                 HorizontalDivider()

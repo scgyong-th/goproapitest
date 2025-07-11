@@ -23,6 +23,7 @@ import com.example.xiangatewaypilot.ui.theme.XianGatewayPilotTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        GoProUuids.init(this)
         enableEdgeToEdge()
         setContent {
             val vm: BleScannerVM = viewModel()
