@@ -40,16 +40,25 @@ fun BleScannerScreen(viewModel: BleScannerVM) {
 
         LazyColumn {
             items(devices) { device ->
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {}
-                    .padding(8.dp)
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable { /* onClick */ }
+                        .padding(8.dp)
                 ) {
-                    Text(text = device.name ?: "Unknown Device", style = MaterialTheme.typography.titleMedium)
+                    Text(text = device.name, style = MaterialTheme.typography.titleMedium)
                     Text(text = device.address, style = MaterialTheme.typography.bodySmall)
+                    if (device.manufacturerData.isNotBlank()) {
+                        Text(
+                            text = device.manufacturerData,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
                 }
                 HorizontalDivider()
             }
         }
+
     }
 }
