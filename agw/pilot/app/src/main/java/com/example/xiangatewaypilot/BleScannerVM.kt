@@ -158,9 +158,13 @@ class BleScannerVM(app: Application) : AndroidViewModel(app) {
                     }
                 }
 
-                sendHard
+                sendGetHardwareInfo()
             }
         }
+    }
+
+    private fun sendGetHardwareInfo() {
+        TODO("Not yet implemented")
     }
 
     private fun subscribeToNotification(
