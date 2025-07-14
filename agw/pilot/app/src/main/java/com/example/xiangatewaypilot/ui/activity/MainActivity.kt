@@ -1,25 +1,62 @@
 package com.example.xiangatewaypilot.ui.activity
 
+import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.xiangatewaypilot.constants.GoProUuids
+import com.example.xiangatewaypilot.httpd.GatewayService
 import com.example.xiangatewaypilot.model.main.BleModel
 import com.example.xiangatewaypilot.ui.composable.MainScreen
 
 class MainActivity : ComponentActivity() {
+    private lateinit var vm: BleModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         GoProUuids.init(this)
         enableEdgeToEdge()
+
+        vm = ViewModelProvider(this)[BleModel::class.java]
+
         setContent {
-            val vm: BleModel = viewModel()
             MainScreen(viewModel = vm)
         }
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    override fun onStart() {
+        super.onStart()
+        registerReceiver(receiver, IntentFilter("com.thinkware.xian.msg.web"))
+
+        val intent = Intent(this, GatewayService::class.java)
+        this.startService(intent)
+    }
+
+    override fun onStop() {
+        unregisterReceiver(receiver)
+        super.onStop()
+    }
+
+    val receiver = object: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val path = intent?.getStringExtra("path")?: ""
+            Log.d("MainActivity", "Broadcast Receiver received: $path.")
+
+            when {
+                path == "connect" -> {
+                    vm.connect()
+                }
+            }
+        }
+    }
 }
 
 //enableEdgeToEdge()

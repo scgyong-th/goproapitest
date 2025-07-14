@@ -15,7 +15,7 @@ class GatewayService : Service() {
     override fun onCreate() {
         super.onCreate()
         val port = 6502
-        server = SimpleHttpServer(port)
+        server = SimpleHttpServer(this, port)
         try {
             server.start()
             Log.d(TAG, "NanoHTTPD started on port $port")

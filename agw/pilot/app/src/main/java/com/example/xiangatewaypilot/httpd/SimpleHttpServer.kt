@@ -1,9 +1,11 @@
 package com.example.xiangatewaypilot.httpd
 
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import fi.iki.elonen.NanoHTTPD
 
-class SimpleHttpServer(port: Int) : NanoHTTPD(port) {
+class SimpleHttpServer(private val context: Context, port: Int) : NanoHTTPD(port) {
 
     override fun serve(session: IHTTPSession): Response {
         val uri = session.uri
@@ -13,6 +15,14 @@ class SimpleHttpServer(port: Int) : NanoHTTPD(port) {
 
         return when {
             uri == "/hello" && method == Method.GET -> {
+                newFixedLengthResponse("Hello from NanoHTTPD!\n")
+            }
+
+            uri.startsWith("/app/") && method == Method.GET -> {
+                val intent = Intent("com.thinkware.xian.msg.web").apply {
+                    putExtra("path", uri.substring(5))
+                }
+                context.sendBroadcast(intent)
                 newFixedLengthResponse("Hello from NanoHTTPD!")
             }
 

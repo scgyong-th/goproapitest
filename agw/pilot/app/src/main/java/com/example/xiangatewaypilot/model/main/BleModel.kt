@@ -51,6 +51,7 @@ class BleModel(app: Application): AndroidViewModel(app) {
     }
     @SuppressLint("MissingPermission")
     fun connect() {
+        //Log.v("BleModel", "connect() is called")
         if (_selectedDevice.value == null) {
             Log.w("BleModel", "No selected device")
             return
@@ -185,6 +186,9 @@ class BleModel(app: Application): AndroidViewModel(app) {
             Log.d("BLE", "Password: $password")
             properties["wifi_password"] = password
         })
+        enqueueRequest(SetApControl(true) { resp ->
+            Log.d("BLE", "resp: ${resp.toJson()}")
+        })
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
@@ -219,6 +223,14 @@ class BleModel(app: Application): AndroidViewModel(app) {
         processNext()
     }
 
+    private fun handleRequestFailure(request: BleRequest) {
+        request.tryCount -= 1
+        Log.d("BLE", "tryCount={request.tryCount}")
+        if (request.tryCount > 0) {
+            requestQueue.addFirst(request)
+        }
+        finishRequest()
+    }
     @SuppressLint("MissingPermission")
     private fun processNext() {
         Log.v("BLE", "In processNext(): $isProcessing or $requestForNotify")
@@ -234,7 +246,9 @@ class BleModel(app: Application): AndroidViewModel(app) {
                 Log.v("BLE", "before read")
                 val success = gatt?.readCharacteristic(request.characteristic) == true
                 Log.v("BLE", "after  read: $success")
-                if (!success) finishRequest()
+                if (!success) {
+                    handleRequestFailure(request)
+                }
             }
 
             is BleRequest.Write -> {
@@ -243,8 +257,12 @@ class BleModel(app: Application): AndroidViewModel(app) {
 
                 Log.d("BLE", "Write: ${request.value.toHexString()} ${success}")
 
+                if (!success) {
+                    handleRequestFailure(request)
+                    return
+                }
                 // 👇 write 후 response가 없는 명령이면 바로 다음 처리
-                if (!success || !request.waitForResponse) {
+                if (!request.waitForResponse) {
                     finishRequest()
                 } else {
                     // 👇 response notify가 올 때까지 block

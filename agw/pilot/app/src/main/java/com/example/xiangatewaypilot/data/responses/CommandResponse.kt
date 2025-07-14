@@ -1,6 +1,7 @@
 package com.example.xiangatewaypilot.data.responses
 
 import android.util.Log
+import com.example.xiangatewaypilot.util.toHexString
 
 open class CommandResponse(protected val bytes: ByteArray) {
     val commandId: Int get() = bytes.getOrNull(1)?.toInt() ?: -1
@@ -11,9 +12,11 @@ open class CommandResponse(protected val bytes: ByteArray) {
 
     init {
         offset = 3
-        optionalResponse = nextBytes()
-        if (optionalResponse?.isEmpty() == true) {
-            optionalResponse = null
+        if (offset < bytes.size) {
+            optionalResponse = nextBytes()
+            if (optionalResponse?.isEmpty() == true) {
+                optionalResponse = null
+            }
         }
     }
     fun nextString(): String {
@@ -36,6 +39,6 @@ open class CommandResponse(protected val bytes: ByteArray) {
     }
 
     open fun toJson(): String {
-        return """{"error":"Not Implemented"}"""
+        return """{"command":${commandId},"status":${status},"value":"${bytes.toHexString()}"}"""
     }
 }

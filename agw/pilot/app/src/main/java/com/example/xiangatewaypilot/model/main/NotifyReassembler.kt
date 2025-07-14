@@ -1,5 +1,7 @@
 package com.example.xiangatewaypilot.model.main
 
+import android.util.Log
+
 class NotifyReassembler(private val timeoutMillis: Long = 2000) {
     private val fragments = mutableMapOf<Int, ByteArray>()
     private var expectedPacketCount: Int? = null
@@ -8,6 +10,10 @@ class NotifyReassembler(private val timeoutMillis: Long = 2000) {
 
     fun append(fragment: ByteArray): ByteArray? {
         if (fragment.isEmpty()) return null
+        val seq = fragment[0].toInt() and 0xFF
+        if (seq < 0x20) {
+            return fragment
+        }
 
         val now = System.currentTimeMillis()
 
@@ -20,7 +26,6 @@ class NotifyReassembler(private val timeoutMillis: Long = 2000) {
 
         lastReceivedTime = now
 
-        val seq = fragment[0].toInt() and 0xFF
         val body = fragment.copyOfRange(1, fragment.size)
 
         fragments[seq] = body
@@ -36,6 +41,8 @@ class NotifyReassembler(private val timeoutMillis: Long = 2000) {
             val packetsNeeded = kotlin.math.ceil(remainingPayload / 19.0).toInt()
 
             expectedPacketCount = 1 + packetsNeeded
+
+            Log.v("BLE", "$totalLen, $firstBodyPayloadSize, $remainingPayload, $packetsNeeded, $expectedPacketCount")
         }
 
         if (expectedPacketCount != null && fragments.size >= expectedPacketCount!!) {

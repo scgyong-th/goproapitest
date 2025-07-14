@@ -3,7 +3,7 @@ package com.example.xiangatewaypilot.model.main
 import android.bluetooth.BluetoothGattCharacteristic
 import com.example.xiangatewaypilot.data.responses.CommandResponse
 
-sealed class BleRequest {
+sealed class BleRequest(var tryCount: Int = 3) {
     open class Read(
         val characteristic: BluetoothGattCharacteristic,
         val onReturn: ((ByteArray)->Unit)? = null
