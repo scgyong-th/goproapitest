@@ -2,6 +2,7 @@ package com.example.xiangatewaypilot
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -27,7 +28,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val vm: BleScannerVM = viewModel()
-            BleScannerScreen(viewModel = vm)
+            val lastDevice = BleDevice.load(this)
+            Log.d("MainActivity", "lastDevice=" + lastDevice.toString())
+            BleScannerScreen(viewModel = vm, lastDevice = lastDevice)
             //XianGatewayPilotTheme {
             //    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
             //        MainScreen()

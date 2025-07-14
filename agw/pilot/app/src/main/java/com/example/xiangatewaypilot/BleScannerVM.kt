@@ -14,6 +14,8 @@ import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.os.ParcelUuid
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -22,6 +24,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.util.UUID
+import androidx.core.content.edit
+import com.example.xiangatewaypilot.data.responses.ResponseFactory
+import java.lang.Math.ceil
 
 data class BleDevice(
     val name: String,
@@ -31,13 +36,46 @@ data class BleDevice(
     override fun toString(): String {
         return "$name ($address)\n$manufacturerData"
     }
-}
 
-const val GOPRO_UUID = "0000FEA6-0000-1000-8000-00805f9b34fb"
+    fun save(context: Context) {
+        Log.v("BleDevice", "Saving: $this")
+        val prefs = context.getSharedPreferences("ble_prefs", Context.MODE_PRIVATE)
+        prefs.edit() {
+            putString("ble_device", this@BleDevice.toString())
+            Log.v("BleDevice", this@BleDevice.toString())
+        }
+    }
+
+    companion object {
+        fun fromString(str: String): BleDevice? {
+            val lines = str.lines()
+            if (lines.size < 2) return null
+
+            val firstLine = lines[0]
+            val manufacturerData = lines.drop(1).joinToString("\n") // 여러 줄일 수도 있음
+
+            val nameAddressRegex = Regex("""^(.*)\s+\(([^)]+)\)$""")
+            val match = nameAddressRegex.matchEntire(firstLine) ?: return null
+
+            val name = match.groupValues[1].trim()
+            val address = match.groupValues[2].trim()
+
+            return BleDevice(name, address, manufacturerData.trim())
+        }
+        fun load(context: Context): BleDevice? {
+            val prefs = context.getSharedPreferences("ble_prefs", Context.MODE_PRIVATE)
+            val saved = prefs.getString("ble_device", null) ?: return null
+            return fromString(saved)
+        }
+    }
+}
 
 class BleScannerVM(app: Application) : AndroidViewModel(app) {
     private val _devices = MutableStateFlow<List<BleDevice>>(emptyList())
     val devices: StateFlow<List<BleDevice>> = _devices.asStateFlow()
+    var gatt: BluetoothGatt? = null
+    var device: BleDevice? = null
+    val notifyReassembler: NotifyReassembler = NotifyReassembler()
 
     private val bluetoothAdapter: BluetoothAdapter by lazy {
         val manager = getApplication<Application>().getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
@@ -111,9 +149,11 @@ class BleScannerVM(app: Application) : AndroidViewModel(app) {
         super.onCleared()
     }
 
-    fun connectToDevice(context: Context, macAddress: String) {
-        val device = bluetoothAdapter.getRemoteDevice(macAddress)
-        device.connectGatt(context.applicationContext, false, gattCallback)
+    fun connectToDevice(context: Context, device: BleDevice) {
+        this.device = device
+        val macAddress = device.address
+        val dev = bluetoothAdapter.getRemoteDevice(macAddress)
+        dev.connectGatt(context.applicationContext, false, gattCallback)
     }
 
     private val gattCallback = object : BluetoothGattCallback() {
@@ -136,6 +176,8 @@ class BleScannerVM(app: Application) : AndroidViewModel(app) {
                 //Log.i("BLE", "Services: ${gatt?.services}")
                 val notifyFlag = BluetoothGattCharacteristic.PROPERTY_NOTIFY
 
+                this@BleScannerVM.gatt = gatt
+                CharCache.gatt = gatt!!
                 Log.i("BLE", "🔍 Discovered GATT Services:")
                 gatt?.services?.let { services ->
                     for (service in services) {
@@ -158,13 +200,57 @@ class BleScannerVM(app: Application) : AndroidViewModel(app) {
                     }
                 }
 
-                sendGetHardwareInfo()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    sendGetHardwareInfo()
+                }, 500)
             }
         }
+
+        override fun onCharacteristicWrite(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic,
+            status: Int
+        ) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                Log.i("BLE", "Write succeeded to ${characteristic.uuid}")
+            } else {
+                Log.e("BLE", "Write failed to ${characteristic.uuid}, status=$status")
+            }
+        }
+
+        @Deprecated("Deprecated by Android API", ReplaceWith("newer callback if exists"))
+        override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
+            val data = characteristic.value
+            val assembled = notifyReassembler.append(data)
+            if (assembled == null) {
+                Log.i("BLE", "🔔 Notify from ${characteristic.uuid}: ${data.toHexString()}")
+                return
+            }
+            Log.d("BLE", "Assembled: ${assembled.toHexString()}")
+            val resp = ResponseFactory.parse(assembled)
+            resp?.let {
+                Log.d("BLE", "JSON: ${it.toJson()}")
+            }
+        }
+
     }
 
+    @OptIn(ExperimentalUnsignedTypes::class)
     private fun sendGetHardwareInfo() {
-        TODO("Not yet implemented")
+        val msg = BleMessage.getHardwareInfo()
+        val char = CharCache["0072"]
+        Log.v("BLE", "sendGetHardwareInfo() $char")
+        char?.let {
+            if (it.properties and BluetoothGattCharacteristic.PROPERTY_WRITE == 0) {
+                Log.e("BLE", "This characteristic is not writable")
+            }
+            it.value = msg.bytes!!
+            it.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+            val success = gatt?.writeCharacteristic(it) == true
+            if (!success) {
+                Log.w("BLE", "Write failed")
+            }
+        }
     }
 
     private fun subscribeToNotification(
@@ -209,5 +295,105 @@ class BleScannerVM(app: Application) : AndroidViewModel(app) {
             propList.add("EXTENDED_PROPS")
 
         return propList.joinToString(", ")
+    }
+}
+
+object CharCache {
+    private val map = mutableMapOf<String, BluetoothGattCharacteristic>()
+
+    lateinit var gatt: BluetoothGatt  // 외부에서 초기화 필요
+    private var serviceUuid: UUID = UUID.fromString(GOPRO_UUID)
+
+    /**
+     * [key]는 4글자 short code ("0072") 형태
+     */
+    operator fun get(key: String): BluetoothGattCharacteristic? {
+        return map[key] ?: run {
+            val fullUuid = goproUuid(key)
+            val char = gatt.getService(serviceUuid)?.getCharacteristic(fullUuid)
+            if (char != null) {
+                map[key] = char
+            }
+            char
+        }
+    }
+
+    fun clear() {
+        map.clear()
+    }
+
+    private fun goproUuid(shortCode: String): UUID {
+        return UUID.fromString("b5f9${shortCode}-aa8d-11e3-9046-0002a5d5c51b")
+    }
+}
+
+fun ByteArray.toHexString(): String =
+    joinToString(" ") { "%02X".format(it) }
+
+class NotifyReassembler(private val timeoutMillis: Long = 2000) {
+    private val fragments = mutableMapOf<Int, ByteArray>()
+    private var expectedPacketCount: Int? = null
+    private var totalPayloadLength: Int? = null
+    private var lastReceivedTime: Long = 0
+
+    fun append(fragment: ByteArray): ByteArray? {
+        if (fragment.isEmpty()) return null
+
+        val now = System.currentTimeMillis()
+
+        // 타임아웃 초과되었으면 초기화
+        if (lastReceivedTime > 0 && now - lastReceivedTime > timeoutMillis) {
+            fragments.clear()
+            expectedPacketCount = null
+            totalPayloadLength = null
+        }
+
+        lastReceivedTime = now
+
+        val seq = fragment[0].toInt() and 0xFF
+        val body = fragment.copyOfRange(1, fragment.size)
+
+        fragments[seq] = body
+
+        if (seq == 0x20 && body.size > 0) {
+            // 메시지 총 길이 추출 (두 번째 바이트가 전체 길이)
+            val totalLen = body[0].toInt() and 0xFF
+            totalPayloadLength = totalLen + 1
+
+            // BLE 패킷은 최대 20바이트 → 1바이트는 seq, 19바이트 payload
+            val firstBodyPayloadSize = body.size
+            val remainingPayload = totalLen - firstBodyPayloadSize
+            val packetsNeeded = kotlin.math.ceil(remainingPayload / 19.0).toInt()
+
+            expectedPacketCount = 1 + packetsNeeded
+        }
+
+        if (expectedPacketCount != null && fragments.size >= expectedPacketCount!!) {
+            val fullPayload = fragments.toSortedMap().values.flattenBytes()
+
+            // 일부 BLE 기기는 1~2 byte 더 보낼 수도 있어서 길이 기준으로 잘라줌
+            val actualLength = totalPayloadLength ?: fullPayload.size
+            val result = fullPayload.take(actualLength).toByteArray()
+
+            // 초기화
+            fragments.clear()
+            expectedPacketCount = null
+            totalPayloadLength = null
+
+            return result
+        }
+
+        return null
+    }
+
+    private fun Collection<ByteArray>.flattenBytes(): ByteArray {
+        val totalLength = sumOf { it.size }
+        val result = ByteArray(totalLength)
+        var offset = 0
+        for (array in this) {
+            array.copyInto(result, offset)
+            offset += array.size
+        }
+        return result
     }
 }

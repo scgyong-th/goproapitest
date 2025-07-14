@@ -15,15 +15,38 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.xiangatewaypilot.BleDevice
 import com.example.xiangatewaypilot.BleScannerVM
 
 @Composable
-fun BleScannerScreen(viewModel: BleScannerVM) {
+fun BleScannerScreen(viewModel: BleScannerVM, lastDevice: BleDevice?) {
     val devices by viewModel.devices.collectAsState()
     var isScanning by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        // 최근 장치 표시
+        if (lastDevice != null) {
+            Text(
+                text = "🔁 최근 연결 장치:",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(
+                text = lastDevice.toString(),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            Button(
+                onClick = {
+                    viewModel.connectToDevice(context, lastDevice)
+                    //device.save(context)
+                }
+            ) {
+                Text("Connect")
+            }
+            HorizontalDivider()
+        }
+        Text("🔍 검색된 BLE 장치 목록:")
         Button(
             onClick = {
                 if (isScanning) {
@@ -61,7 +84,8 @@ fun BleScannerScreen(viewModel: BleScannerVM) {
 
                     Button(
                         onClick = {
-                            viewModel.connectToDevice(context, device.address)
+                            viewModel.connectToDevice(context, device)
+                            device.save(context)
                         }
                     ) {
                         Text("Connect")
