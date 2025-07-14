@@ -15,6 +15,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.annotation.RequiresPermission
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.AndroidViewModel
 import com.example.xiangatewaypilot.constants.GoProUuids
 import com.example.xiangatewaypilot.data.responses.ResponseFactory
@@ -30,7 +31,11 @@ class BleModel(app: Application): AndroidViewModel(app) {
     val selectedDevice: StateFlow<ScannedDeviceEntry?> = _selectedDevice
     var gatt: BluetoothGatt? = null
 
+    val properties = mutableStateMapOf<String, String>()
+
     val notifyReassembler: NotifyReassembler = NotifyReassembler()
+
+    private val handler: Handler by lazy { Handler(Looper.getMainLooper()) }
 
     private val bluetoothAdapter: BluetoothAdapter? by lazy {
         val manager = app.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager?
@@ -39,6 +44,7 @@ class BleModel(app: Application): AndroidViewModel(app) {
 
     init {
         _selectedDevice.value = ScannedDeviceEntry.load(app)
+        properties.clear()
     }
     fun selectDevice(device: ScannedDeviceEntry) {
         _selectedDevice.value = device
@@ -63,9 +69,15 @@ class BleModel(app: Application): AndroidViewModel(app) {
             when (newState) {
                 BluetoothProfile.STATE_CONNECTED -> {
                     Log.i("BLE", "Connected to ${gatt?.device?.address}")
+                    handler.post {
+                        Log.d("BLE", """Setting "connected" to true""")
+                        properties["connected"] = "true"
+                    }
                     gatt?.discoverServices()
                 }
                 BluetoothProfile.STATE_DISCONNECTED -> {
+                    Log.d("BLE", """Setting "connected" to false""")
+                    properties["connected"] = "false"
                     Log.w("BLE", "Disconnected from ${gatt?.device?.address}")
                 }
             }
@@ -96,7 +108,7 @@ class BleModel(app: Application): AndroidViewModel(app) {
                 }
 
 
-                Handler(Looper.getMainLooper()).postDelayed({
+                handler.postDelayed({
                     startHandshake()
                 }, 500)
             }
@@ -127,7 +139,7 @@ class BleModel(app: Application): AndroidViewModel(app) {
             val resp = ResponseFactory.parse(assembled)
             resp?.let {
                 Log.d("BLE", "JSON: ${it.toJson()}")
-                Handler(Looper.getMainLooper()).post {
+                handler.post {
                     val request = requestForNotify
                     if (requestForNotify != null) {
                         requestForNotify = null
@@ -148,7 +160,7 @@ class BleModel(app: Application): AndroidViewModel(app) {
             val value = characteristic.value
             Log.d("BLE", "onCharRead: char=${characteristic.uuid}, value=${value.toHexString()}, status=${status}")
 
-            Handler(Looper.getMainLooper()).post {
+            handler.post {
                 val request = requestForRead
                 if (requestForRead != null) {
                     requestForRead = null
@@ -163,12 +175,15 @@ class BleModel(app: Application): AndroidViewModel(app) {
         Log.d("BLE", "startHandshake()")
         enqueueRequest(GetHardwareInfo() { resp ->
             Log.d("BLE", "resp: ${resp.toJson()}")
+            properties["deviceJson"] = resp.toJson()
         })
         enqueueRequest(GetWifiApSsid() { ssid ->
             Log.d("BLE", "SSID: $ssid")
+            properties["wifi_ssid"] = ssid
         })
         enqueueRequest(GetWifiApPassword() { password ->
             Log.d("BLE", "Password: $password")
+            properties["wifi_password"] = password
         })
     }
 
@@ -241,7 +256,7 @@ class BleModel(app: Application): AndroidViewModel(app) {
     private fun finishRequest() {
         Log.d("BLE", "finishing Request")
         // delayed processNext()
-        Handler(Looper.getMainLooper()).postDelayed({
+        handler.postDelayed({
             isProcessing = false
             Log.d("BLE", "After Delay?")
             processNext()

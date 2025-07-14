@@ -87,6 +87,19 @@ fun MainScreen(viewModel: BleModel) {
         ) {
             Text("Scan")
         }
+        PropsView(viewModel.properties)
+    }
+}
+
+@Composable
+fun PropsView(props: Map<String, String>) {
+    Column {
+        Text("Connected: ${props["connected"] ?: "false"}")
+        if (props["connected"] == "true") {
+            Text("Device: ${props["deviceJson"] ?: "N/A"}")
+            Text("WiFi SSID: ${props["wifi_ssid"] ?: "N/A"}")
+            Text("WiFi Pass: ${props["wifi_password"] ?: "N/A"}")
+        }
     }
 }
 
@@ -94,4 +107,16 @@ fun MainScreen(viewModel: BleModel) {
 @Composable
 fun MainScreenPreview() {
     MainScreen(BleModel(Application()))
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PropsPreview() {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        PropsView(mutableMapOf("connected" to "true"))
+        HorizontalDivider()
+        PropsView(mutableMapOf("connected" to "false"))
+    }
 }
