@@ -1,23 +1,24 @@
 package com.example.xiangatewaypilot.ui.activity
 
-import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.xiangatewaypilot.constants.GoProUuids
-import com.example.xiangatewaypilot.httpd.GatewayService
+import com.example.xiangatewaypilot.httpd.SimpleHttpServer
 import com.example.xiangatewaypilot.model.main.BleModel
 import com.example.xiangatewaypilot.ui.composable.MainScreen
+import java.io.IOException
 
 class MainActivity : ComponentActivity() {
+    private val TAG = this::class.java.simpleName
+
+    private lateinit var server: SimpleHttpServer
     private lateinit var vm: BleModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,24 +26,44 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         vm = ViewModelProvider(this)[BleModel::class.java]
+        startWebServer()
 
         setContent {
             MainScreen(viewModel = vm)
         }
     }
 
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
-    override fun onStart() {
-        super.onStart()
-        registerReceiver(receiver, IntentFilter("com.thinkware.xian.msg.web"))
-
-        val intent = Intent(this, GatewayService::class.java)
-        this.startService(intent)
+    private fun startWebServer() {
+        val port = 6502
+        server = SimpleHttpServer(this, port, vm)
+        try {
+            server.start()
+            Log.d(TAG, "NanoHTTPD started on port $port")
+        } catch (e: IOException) {
+            Log.e(TAG, "Failed to start NanoHTTPD", e)
+        }
+    }
+    private fun stopWebServer() {
+        server.stop()
     }
 
-    override fun onStop() {
-        unregisterReceiver(receiver)
-        super.onStop()
+//    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+//    override fun onStart() {
+//        super.onStart()
+//        registerReceiver(receiver, IntentFilter("com.thinkware.xian.msg.web"))
+//
+//        val intent = Intent(this, GatewayService::class.java)
+//        this.startService(intent)
+//    }
+//
+//    override fun onStop() {
+//        unregisterReceiver(receiver)
+//        super.onStop()
+//    }
+
+    override fun onDestroy() {
+        stopWebServer()
+        super.onDestroy()
     }
 
     val receiver = object: BroadcastReceiver() {

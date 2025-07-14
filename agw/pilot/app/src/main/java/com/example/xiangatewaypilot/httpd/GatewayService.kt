@@ -12,17 +12,17 @@ class GatewayService : Service() {
 
     private lateinit var server: SimpleHttpServer
 
-    override fun onCreate() {
-        super.onCreate()
-        val port = 6502
-        server = SimpleHttpServer(this, port)
-        try {
-            server.start()
-            Log.d(TAG, "NanoHTTPD started on port $port")
-        } catch (e: IOException) {
-            Log.e(TAG, "Failed to start NanoHTTPD", e)
-        }
-    }
+//    override fun onCreate() {
+//        super.onCreate()
+////        val port = 6502
+////        server = SimpleHttpServer(this, port, vm)
+////        try {
+////            server.start()
+////            Log.d(TAG, "NanoHTTPD started on port $port")
+////        } catch (e: IOException) {
+////            Log.e(TAG, "Failed to start NanoHTTPD", e)
+////        }
+//    }
 
     override fun onDestroy() {
         server.stop()

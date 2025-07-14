@@ -3,9 +3,11 @@ package com.example.xiangatewaypilot.httpd
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.example.xiangatewaypilot.model.main.BleModel
 import fi.iki.elonen.NanoHTTPD
 
-class SimpleHttpServer(private val context: Context, port: Int) : NanoHTTPD(port) {
+class SimpleHttpServer(private val context: Context, port: Int, val vm: BleModel) : NanoHTTPD(port) {
+    private val TAG = this::class.java.simpleName
 
     override fun serve(session: IHTTPSession): Response {
         val uri = session.uri
@@ -19,10 +21,12 @@ class SimpleHttpServer(private val context: Context, port: Int) : NanoHTTPD(port
             }
 
             uri.startsWith("/app/") && method == Method.GET -> {
-                val intent = Intent("com.thinkware.xian.msg.web").apply {
-                    putExtra("path", uri.substring(5))
-                }
-                context.sendBroadcast(intent)
+//                val intent = Intent("com.thinkware.xian.msg.web").apply {
+//                    putExtra("path", uri.substring(5))
+//                }
+//                context.sendBroadcast(intent)
+                Log.d(TAG, "Trying to connect")
+                vm.connect()
                 newFixedLengthResponse("Hello from NanoHTTPD!")
             }
 
