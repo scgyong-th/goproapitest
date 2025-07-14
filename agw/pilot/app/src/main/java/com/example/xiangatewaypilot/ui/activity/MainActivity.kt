@@ -1,4 +1,4 @@
-package com.example.xiangatewaypilot
+package com.example.xiangatewaypilot.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -18,7 +18,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.xiangatewaypilot.ui.BleScannerScreen
+import com.example.xiangatewaypilot.model.BleDevice
+import com.example.xiangatewaypilot.model.BleScannerVM
+import com.example.xiangatewaypilot.httpd.GatewayService
+import com.example.xiangatewaypilot.constants.GoProUuids
+import com.example.xiangatewaypilot.ui.composable.BleScannerScreen
 import com.example.xiangatewaypilot.ui.theme.XianGatewayPilotTheme
 
 class MainActivity : ComponentActivity() {

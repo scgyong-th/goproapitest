@@ -1,4 +1,4 @@
-package com.example.xiangatewaypilot
+package com.example.xiangatewaypilot.constants
 
 import android.content.Context
 import kotlinx.serialization.Serializable

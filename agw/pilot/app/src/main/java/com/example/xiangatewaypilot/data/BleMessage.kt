@@ -1,5 +1,6 @@
-package com.example.xiangatewaypilot
+package com.example.xiangatewaypilot.data
 
+import com.example.xiangatewaypilot.constants.GoProUUID
 import java.util.UUID
 
 //@OptIn(ExperimentalUnsignedTypes::class)

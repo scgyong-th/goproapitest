@@ -1,4 +1,4 @@
-package com.example.xiangatewaypilot
+package com.example.xiangatewaypilot.model
 
 import android.Manifest
 import android.Manifest.permission.BLUETOOTH_CONNECT
@@ -28,8 +28,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.util.UUID
 import androidx.core.content.edit
+import com.example.xiangatewaypilot.data.BleMessage
+import com.example.xiangatewaypilot.constants.GOPRO_UUID
+import com.example.xiangatewaypilot.constants.GoProUuids
 import com.example.xiangatewaypilot.data.responses.ResponseFactory
-import java.lang.Math.ceil
 
 data class BleDevice(
     val name: String,

@@ -1,4 +1,4 @@
-package com.example.xiangatewaypilot
+package com.example.xiangatewaypilot.httpd
 
 import android.util.Log
 import fi.iki.elonen.NanoHTTPD
