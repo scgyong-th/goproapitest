@@ -1,5 +1,7 @@
 package com.example.xiangatewaypilot
 
+import android.Manifest
+import android.Manifest.permission.BLUETOOTH_CONNECT
 import android.app.Application
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothGatt
@@ -18,6 +20,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.ParcelUuid
 import android.util.Log
+import androidx.annotation.RequiresPermission
 import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -95,6 +98,7 @@ class BleScannerVM(app: Application) : AndroidViewModel(app) {
         .build()
 
     private val scanCallback = object : ScanCallback() {
+        @RequiresPermission(BLUETOOTH_CONNECT)
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
             result?.let {
                 val deviceName = it.device.name ?: "Unknown"
@@ -135,27 +139,30 @@ class BleScannerVM(app: Application) : AndroidViewModel(app) {
     //  mTxPowerLevel=-2147483648,
     //  mDeviceName=GoPro 1895], mRssi=-56, mTimestampNanos=729496450490217}
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
     fun startScan() {
         _devices.value = emptyList()
         scanner?.startScan(scanFilters, scanSettings, scanCallback)
     }
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
     fun stopScan() {
         scanner?.stopScan(scanCallback)
     }
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
     override fun onCleared() {
         stopScan()
         super.onCleared()
     }
 
+    @RequiresPermission(BLUETOOTH_CONNECT)
     fun connectToDevice(context: Context, device: BleDevice) {
         this.device = device
         val macAddress = device.address
         val dev = bluetoothAdapter.getRemoteDevice(macAddress)
         dev.connectGatt(context.applicationContext, false, gattCallback)
     }
-
     private val gattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             Log.i("BLE", "onConnectionStateChange: status=$status, newState=$newState")
@@ -203,6 +210,9 @@ class BleScannerVM(app: Application) : AndroidViewModel(app) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     sendGetHardwareInfo()
                 }, 500)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    sendGetWifiInfo()
+                }, 2000)
             }
         }
 
@@ -233,13 +243,34 @@ class BleScannerVM(app: Application) : AndroidViewModel(app) {
             }
         }
 
+        override fun onCharacteristicRead(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic,
+            status: Int
+        ) {
+            val value = characteristic.value
+            Log.d("BLE", "onCharRead: char=${characteristic.uuid}, value=${value.toHexString()}, status=${status}")
+
+            if (characteristic.uuid.toString() == "b5f90002-aa8d-11e3-9046-0002a5d5c51b") {
+                sendGetWifiPassword()
+            }
+        }
+//        override fun onCharacteristicRead(
+//            gatt: BluetoothGatt,
+//            characteristic: BluetoothGattCharacteristic,
+//            value: ByteArray,
+//            status: Int
+//        ) {
+//            super.onCharacteristicRead(gatt, characteristic, value, status)
+//            Log.d("BLE", "onCharRead: char=${characteristic.uuid}, value=${value.toHexString()}, status=${status}")
+//        }
     }
 
     @OptIn(ExperimentalUnsignedTypes::class)
     private fun sendGetHardwareInfo() {
         val msg = BleMessage.getHardwareInfo()
         val char = CharCache["0072"]
-        Log.v("BLE", "sendGetHardwareInfo() $char")
+        Log.v("BLE", "sendGetHardwareInfo() ${char?.uuid ?: ""}")
         char?.let {
             if (it.properties and BluetoothGattCharacteristic.PROPERTY_WRITE == 0) {
                 Log.e("BLE", "This characteristic is not writable")
@@ -248,11 +279,31 @@ class BleScannerVM(app: Application) : AndroidViewModel(app) {
             it.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
             val success = gatt?.writeCharacteristic(it) == true
             if (!success) {
-                Log.w("BLE", "Write failed")
+                Log.w("BLE", "Write (GetHardwareInfo) failed")
             }
         }
     }
 
+    private fun sendGetWifiInfo() {
+        val char = CharCache.get("0001", "0002")
+        Log.v("BLE", "sendGetWifiInfo() $char")
+        char?.let {
+            val success = gatt?.readCharacteristic(it) == true
+            if (!success) {
+                Log.w("BLE", "Read (GetWifiInfo) failed")
+            }
+        }
+    }
+    private fun sendGetWifiPassword() {
+        val char = CharCache.get("0001", "0003")
+        Log.v("BLE", "sendGetWifiPassword() $char")
+        char?.let {
+            val success = gatt?.readCharacteristic(it) == true
+            if (!success) {
+                Log.w("BLE", "Read (GetWifiInfo) failed")
+            }
+        }
+    }
     private fun subscribeToNotification(
         gatt: BluetoothGatt,
         characteristic: BluetoothGattCharacteristic
@@ -316,6 +367,20 @@ object CharCache {
             }
             char
         }
+    }
+
+    fun get(service: String, char: String): BluetoothGattCharacteristic? {
+        val charUuid = goproUuid(char)
+        var characteristic = this[char]
+        characteristic?.let {
+            return it
+        }
+        characteristic = gatt.getService(goproUuid(service)).getCharacteristic(charUuid)
+        characteristic?.let {
+            map[char] = it
+            return it
+        }
+        return null
     }
 
     fun clear() {
