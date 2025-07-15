@@ -81,6 +81,10 @@
 ### BLE
 - `CommmandId`, `QueryId`, `StatusId` 정리
   - template 만 주고 GoPro API 문서 넘겨주니 ChatGPT 가 잘 생성
+- Timeout 설정
+  - 전송이 실패하면 3회 재시도
+  - 전송이 성공했는데도 1초간 응답이 없으면 timeout
 - Query 실패
   - Query (`0076`) 을 보냈는데 (write success) Query Response (`0077`) 이 오지 않음
+  - AP Control enable 전/후 값 얻어오기 실패 중.
   - 원인 파악 중
