@@ -2,6 +2,7 @@ package com.example.xiangatewaypilot.model.main
 
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
+import android.util.Log
 import com.example.xiangatewaypilot.constants.GOPRO_UUID
 import com.example.xiangatewaypilot.constants.ID2
 import java.util.UUID
@@ -18,13 +19,14 @@ object CharCache {
     operator fun get(key: String): BluetoothGattCharacteristic? {
         return map[key] ?: run {
             val serviceUuidPart = ID2.service[key]
-            val uuid: UUID
-            if (serviceUuidPart != null) {
-                uuid = goproUuid(serviceUuidPart)
+            Log.v("CharCache", "key=$key, serviceUuidPart = $serviceUuidPart")
+            val uuid = if (serviceUuidPart != null) {
+                goproUuid(serviceUuidPart)
             } else {
-                uuid = serviceUuid
+                serviceUuid
             }
             val fullCharUuid = goproUuid(key)
+            Log.v("CharCache", "fullChar=$fullCharUuid svc=$uuid")
             val char = gatt.getService(uuid)?.getCharacteristic(fullCharUuid)
             if (char != null) {
                 map[key] = char

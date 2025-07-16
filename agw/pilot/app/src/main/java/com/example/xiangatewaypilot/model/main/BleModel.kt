@@ -36,6 +36,7 @@ class BleModel(app: Application): AndroidViewModel(app) {
     val notifyReassembler: NotifyReassembler = NotifyReassembler()
 
     private val handler: Handler by lazy { Handler(Looper.getMainLooper()) }
+    val notifyCharacteristics = mutableListOf<BluetoothGattCharacteristic>()
 
     private val bluetoothAdapter: BluetoothAdapter? by lazy {
         val manager = app.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager?
@@ -102,7 +103,7 @@ class BleModel(app: Application): AndroidViewModel(app) {
                             val charName = GoProUuids.findByUuid(characteristic.uuid.toString())?.name ?: "Unknown"
                             //Log.i("BLE", "  └─ 🧬 Characteristic UUID: ${characteristic.uuid} ${props} [${charName}]")
                             if (characteristic.properties and BluetoothGattCharacteristic.PROPERTY_NOTIFY != 0) {
-                                subscribeToNotification(gatt, characteristic)
+                                notifyCharacteristics.add(characteristic)
                             }
                         }
                     }
@@ -110,8 +111,8 @@ class BleModel(app: Application): AndroidViewModel(app) {
 
 
                 handler.postDelayed({
-                    startHandshake()
-                }, 500)
+                    subscribeNextNotification()
+                }, 100)
             }
         }
 
@@ -130,14 +131,15 @@ class BleModel(app: Application): AndroidViewModel(app) {
         @Deprecated("Deprecated by Android API", ReplaceWith("newer callback if exists"))
         override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
             val data = characteristic.value
+            Log.v("BLE", "CharChange: (${data.size}) ${data.toHexString()} on char=${characteristic.uuid}")
             val assembled = notifyReassembler.append(data)
             if (assembled == null) {
-                Log.i("BLE", "🔔 Notify from ${characteristic.uuid}: ${data.toHexString()}")
+                //Log.i("BLE", "🔔 Notify from ${characteristic.uuid}: ${data.toHexString()}")
                 return
             }
 
             Log.d("BLE", "Assembled: ${assembled.toHexString()}")
-            val resp = ResponseFactory.parse(assembled)
+            val resp = ResponseFactory.parse(characteristic.uuid.toString(), assembled)
             resp?.let {
                 Log.d("BLE", "JSON: ${it.toJson()}")
                 handler.post {
@@ -170,6 +172,17 @@ class BleModel(app: Application): AndroidViewModel(app) {
                 request?.setResponse(value)
             }
         }
+
+        override fun onDescriptorWrite(
+            gatt: BluetoothGatt?,
+            descriptor: BluetoothGattDescriptor?,
+            status: Int
+        ) {
+            Log.v("BLE", "onDescriptorWrite status=$status uuid=${descriptor?.uuid}")
+            handler.post {
+                subscribeNextNotification()
+            }
+        }
     }
 
     private fun startHandshake() {
@@ -186,11 +199,41 @@ class BleModel(app: Application): AndroidViewModel(app) {
             Log.d("BLE", "Password: $password")
             properties["wifi_password"] = password
         })
+        enqueueRequest(QueryRequest(QueryId.GET_STATUS_VALUES, StatusId.AP_MODE_ENABLED) { resp->
+            Log.d("BLE", "AP_MODE_ENABLED 1 resp: ${resp.byteValue}")
+        })
         enqueueRequest(SetApControl(true) { resp ->
             Log.d("BLE", "resp: ${resp.toJson()}")
         })
+        enqueueRequest(QueryRequest(QueryId.GET_STATUS_VALUES, StatusId.AP_MODE_ENABLED) { resp->
+            Log.d("BLE", "AP_MODE_ENABLED 2 resp: ${resp.byteValue}")
+        })
     }
 
+    fun queryApMode(onResult: ((Boolean)->Unit)?) {
+        enqueueRequest(QueryRequest(QueryId.GET_STATUS_VALUES, StatusId.AP_MODE_ENABLED) { resp->
+            Log.d("BLE", "AP_MODE_ENABLED resp: ${resp.byteValue}")
+            onResult?.invoke(resp.byteValue == 0)
+        })
+    }
+
+    fun setApMode(enables: Boolean, onResult: ((Boolean)->Unit)?) {
+        enqueueRequest(SetApControl(enables) { resp ->
+            onResult?.invoke((resp.status == 0))
+        })
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun subscribeNextNotification() {
+        if (notifyCharacteristics.isEmpty()) {
+            Log.i("BLE", "Subscribed all chars. Starting Handshake.")
+            startHandshake()
+            return
+        }
+        val char = notifyCharacteristics[0]
+        notifyCharacteristics.removeAt(0)
+        subscribeToNotification(gatt!!, char)
+    }
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     private fun subscribeToNotification(
         gatt: BluetoothGatt,
@@ -216,6 +259,7 @@ class BleModel(app: Application): AndroidViewModel(app) {
     private var isProcessing = false
     private var requestForNotify: BleRequest.Write? = null
     private var requestForRead: BleRequest.Read? = null
+    private var requestedOn: Long = 0
 
     fun enqueueRequest(request: BleRequest) {
         Log.d("BLE", "enqueue")
@@ -248,6 +292,8 @@ class BleModel(app: Application): AndroidViewModel(app) {
                 Log.v("BLE", "after  read: $success")
                 if (!success) {
                     handleRequestFailure(request)
+                } else {
+                    waitForResponse()
                 }
             }
 
@@ -255,7 +301,7 @@ class BleModel(app: Application): AndroidViewModel(app) {
                 request.characteristic.value = request.value
                 val success = gatt?.writeCharacteristic(request.characteristic) == true
 
-                Log.d("BLE", "Write: ${request.value.toHexString()} ${success}")
+                Log.d("BLE", "Write: ${request.value.toHexString()} ${success} $gatt")
 
                 if (!success) {
                     handleRequestFailure(request)
@@ -267,12 +313,28 @@ class BleModel(app: Application): AndroidViewModel(app) {
                 } else {
                     // 👇 response notify가 올 때까지 block
                     requestForNotify = request
+                    waitForResponse()
                 }
             }
         }
     }
+    private fun waitForResponse() {
+        requestedOn = System.currentTimeMillis()
+        val reqOn = requestedOn
+        handler.postDelayed({
+            if (reqOn == requestedOn) {
+                Log.w("BLE", "Timeout: $requestForNotify read=$requestForRead")
+                finishRequest()
+            } else {
+                Log.v("BLE", "ignoring timeout because $reqOn != $requestedOn")
+            }
+        }, 1000)
+    }
     private fun finishRequest() {
-        Log.d("BLE", "finishing Request")
+        Log.d("BLE", "finishing Request: notify=$requestForNotify read=$requestForRead")
+        requestedOn = 0
+        requestForRead = null
+        requestForNotify = null
         // delayed processNext()
         handler.postDelayed({
             isProcessing = false

@@ -2,6 +2,7 @@ package com.example.xiangatewaypilot.model.main
 
 import android.bluetooth.BluetoothGattCharacteristic
 import com.example.xiangatewaypilot.data.responses.CommandResponse
+import com.example.xiangatewaypilot.data.responses.NotifiedResponse
 
 sealed class BleRequest(var tryCount: Int = 3) {
     open class Read(
@@ -19,11 +20,11 @@ sealed class BleRequest(var tryCount: Int = 3) {
         val characteristic: BluetoothGattCharacteristic,
         val value: ByteArray,
         val waitForResponse: Boolean = true, // 👈 response 여부 제어
-        val onReturn: ((CommandResponse)->Unit)? = null
+        val onReturn: ((NotifiedResponse)->Unit)? = null
     ) : BleRequest() {
-        private var response: CommandResponse? = null
+        private var response: NotifiedResponse? = null
 
-        fun setResponse(resp: CommandResponse) {
+        fun setResponse(resp: NotifiedResponse) {
             response = resp;
             onReturn?.invoke(resp)
         }
