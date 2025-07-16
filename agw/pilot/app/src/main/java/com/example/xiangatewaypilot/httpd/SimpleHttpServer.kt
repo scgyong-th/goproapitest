@@ -46,18 +46,24 @@ class SimpleHttpServer(private val context: Context, port: Int, val vm: BleModel
                 newFixedLengthResponse("Enabled: $enabled")
             }
             uri.startsWith("/app/set/ap_mode/") && method == Method.GET -> {
-                val latch = CountDownLatch(1)
+                val latch = CountDownLatch(2)
                 var result = "timeout"
+                var enabled = "timeout"
                 val enables = uri.substring(17) == "true"
-                vm.setApMode(enables) { enabled ->
-                    result = if (enabled) "success" else "failure"
+                vm.setApMode(enables) { success ->
+                    result = if (success) "success" else "failure"
+                    latch.countDown()
+                }
+
+                vm.queryApMode { apEnabled ->
+                    enabled = if (apEnabled) "true" else "false"
                     latch.countDown()
                 }
 
                 // 최대 2초 기다리기
                 val completed = latch.await(2000, TimeUnit.MILLISECONDS)
 
-                newFixedLengthResponse("result: $result")
+                newFixedLengthResponse("result: $result, enabled: $enabled")
             }
             uri == "/test" && method == Method.POST -> {
                 val body = session.inputStream.bufferedReader().readText()

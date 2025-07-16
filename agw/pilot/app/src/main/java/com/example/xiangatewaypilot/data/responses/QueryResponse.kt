@@ -4,7 +4,7 @@ import android.util.Log
 import com.example.xiangatewaypilot.util.toHexString
 import org.json.JSONObject
 
-class QueryRequestResult(bytes: ByteArray) : NotifiedResponse(bytes) {
+class QueryResponse(bytes: ByteArray) : NotifiedResponse(bytes) {
     private val map = mutableMapOf<Byte, ByteArray>();
     init {
         Log.v("QueryRequestResult", "Offset=$offset")
@@ -28,8 +28,11 @@ class QueryRequestResult(bytes: ByteArray) : NotifiedResponse(bytes) {
 
     override fun toJson(): String {
         val json = JSONObject()
+        json.put("response", responseId)
+        json.put("status", status)
+
         for ((key, value) in map) {
-            json.put("0x${"%02X".format(key)}($key)}", value.toHexString())
+            json.put("0x${"%02X".format(key)}($key)", value.toHexString())
         }
         return json.toString(2)
     }

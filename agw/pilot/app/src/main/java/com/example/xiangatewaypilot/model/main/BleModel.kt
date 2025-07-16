@@ -18,7 +18,15 @@ import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.AndroidViewModel
 import com.example.xiangatewaypilot.constants.GoProUuids
-import com.example.xiangatewaypilot.data.responses.ResponseFactory
+import com.example.xiangatewaypilot.data.requests.BleRequest
+import com.example.xiangatewaypilot.data.requests.GetHardwareInfo
+import com.example.xiangatewaypilot.data.requests.GetWifiApPassword
+import com.example.xiangatewaypilot.data.requests.GetWifiApSsid
+import com.example.xiangatewaypilot.data.requests.QueryId
+import com.example.xiangatewaypilot.data.requests.QueryRequest
+import com.example.xiangatewaypilot.data.requests.SetApControl
+import com.example.xiangatewaypilot.data.requests.StatusId
+import com.example.xiangatewaypilot.data.ResponseFactory
 import com.example.xiangatewaypilot.model.scan.ScannedDeviceEntry
 import com.example.xiangatewaypilot.util.toHexString
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -199,21 +207,22 @@ class BleModel(app: Application): AndroidViewModel(app) {
             Log.d("BLE", "Password: $password")
             properties["wifi_password"] = password
         })
-        enqueueRequest(QueryRequest(QueryId.GET_STATUS_VALUES, StatusId.AP_MODE_ENABLED) { resp->
-            Log.d("BLE", "AP_MODE_ENABLED 1 resp: ${resp.byteValue}")
-        })
+        queryApMode { enabled ->
+            Log.d("BLE", "AP_MODE_ENABLED (before enabling) resp: $enabled")
+        }
         enqueueRequest(SetApControl(true) { resp ->
             Log.d("BLE", "resp: ${resp.toJson()}")
         })
-        enqueueRequest(QueryRequest(QueryId.GET_STATUS_VALUES, StatusId.AP_MODE_ENABLED) { resp->
-            Log.d("BLE", "AP_MODE_ENABLED 2 resp: ${resp.byteValue}")
-        })
+        queryApMode { enabled ->
+            Log.d("BLE", "AP_MODE_ENABLED (after enabling) resp: $enabled")
+        }
     }
 
     fun queryApMode(onResult: ((Boolean)->Unit)?) {
         enqueueRequest(QueryRequest(QueryId.GET_STATUS_VALUES, StatusId.AP_MODE_ENABLED) { resp->
             Log.d("BLE", "AP_MODE_ENABLED resp: ${resp.byteValue}")
-            onResult?.invoke(resp.byteValue == 0)
+            properties["ap_mode"] = if (resp.byteValue == 1) "enabled" else "disabled"
+            onResult?.invoke(resp.byteValue == 1)
         })
     }
 

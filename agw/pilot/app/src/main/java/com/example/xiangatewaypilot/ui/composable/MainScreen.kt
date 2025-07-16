@@ -99,6 +99,7 @@ fun PropsView(props: Map<String, String>) {
             Text("Device: ${props["deviceJson"] ?: "N/A"}")
             Text("WiFi SSID: ${props["wifi_ssid"] ?: "N/A"}")
             Text("WiFi Pass: ${props["wifi_password"] ?: "N/A"}")
+            Text("WiFi AP Mode: ${props["ap_mode"] ?: "N/A"}")
         }
     }
 }

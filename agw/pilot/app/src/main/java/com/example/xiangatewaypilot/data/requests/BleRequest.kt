@@ -1,7 +1,6 @@
-package com.example.xiangatewaypilot.model.main
+package com.example.xiangatewaypilot.data.requests
 
 import android.bluetooth.BluetoothGattCharacteristic
-import com.example.xiangatewaypilot.data.responses.CommandResponse
 import com.example.xiangatewaypilot.data.responses.NotifiedResponse
 
 sealed class BleRequest(var tryCount: Int = 3) {

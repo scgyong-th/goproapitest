@@ -1,9 +1,10 @@
-package com.example.xiangatewaypilot.model.main
+package com.example.xiangatewaypilot.data.requests
 
 import com.example.xiangatewaypilot.constants.ID2
-import com.example.xiangatewaypilot.data.responses.CommandResponse
 import com.example.xiangatewaypilot.data.responses.GetHardwareInfoResponse
-import com.example.xiangatewaypilot.data.responses.QueryRequestResult
+import com.example.xiangatewaypilot.data.responses.NotifiedResponse
+import com.example.xiangatewaypilot.data.responses.QueryResponse
+import com.example.xiangatewaypilot.model.main.CharCache
 
 class GetHardwareInfo(onReturn: (GetHardwareInfoResponse)->Unit) : BleRequest.Write(
     characteristic = CharCache[ID2.CHAR_Command]!!,
@@ -26,21 +27,21 @@ class GetWifiApPassword(onReturn: (String)->Unit) : BleRequest.Read(
     onReturn = { it -> onReturn(String(it ?: ByteArray(0), Charsets.UTF_8)) }
 )
 
-class SetApControl(enables: Boolean, onReturn: (QueryRequestResult)->Unit) : BleRequest.Write(
+class SetApControl(enables: Boolean, onReturn: (NotifiedResponse)->Unit) : BleRequest.Write(
     characteristic = CharCache[ID2.CHAR_Command]!!,
     value = byteArrayOf(0x03, CommandId.SET_AP_CONTROL, 0x01, if (enables) 0x01 else 0x00),
-    onReturn = { it -> onReturn(it as QueryRequestResult) }
+    onReturn = onReturn
 )
 
-class QueryRequest(queryId: Byte, ids: ByteArray, onReturn: (QueryRequestResult)->Unit) : BleRequest.Write(
+class QueryRequest(queryId: Byte, ids: ByteArray, onReturn: (QueryResponse)->Unit) : BleRequest.Write(
     characteristic = CharCache[ID2.CHAR_Query]!!,
     value = byteArrayOf((ids.size + 1).toByte(), queryId) + ids,
-    onReturn = { it -> onReturn(it as QueryRequestResult) }
+    onReturn = { it -> onReturn(it as QueryResponse) }
 ) {
     constructor(
         queryId: Byte,
         id: Byte,
-        onReturn: (QueryRequestResult) -> Unit
+        onReturn: (QueryResponse) -> Unit
     ) : this(queryId, byteArrayOf(id), onReturn)
 }
 
