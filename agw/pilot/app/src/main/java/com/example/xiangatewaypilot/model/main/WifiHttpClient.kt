@@ -36,7 +36,7 @@ class WifiHttpClient(val context: Context) {
     }
     suspend fun sendKeepAlive(): String {
         try {
-            val response = client.get("$BASE_URL/gopro/camera   /keep_alive")
+            val response = client.get("$BASE_URL/gopro/camera/keep_alive")
             val body = response.body<String>()
             Log.d("GoProHTTP", "✅ KeepAlive response: $body")
             return body
