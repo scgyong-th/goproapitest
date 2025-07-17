@@ -34,9 +34,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.UUID
 
-class BleModel(app: Application): AndroidViewModel(app) {
+class MainModel(app: Application): AndroidViewModel(app) {
     //var device = BleDevice("", "", "xxx")
     private val _selectedDevice = MutableStateFlow<ScannedDeviceEntry?>(null)
     val selectedDevice: StateFlow<ScannedDeviceEntry?> = _selectedDevice
@@ -103,7 +106,7 @@ class BleModel(app: Application): AndroidViewModel(app) {
                 //Log.i("BLE", "Services: ${gatt?.services}")
                 val notifyFlag = BluetoothGattCharacteristic.PROPERTY_NOTIFY
 
-                this@BleModel.gatt = gatt
+                this@MainModel.gatt = gatt
                 CharCache.gatt = gatt!!
                 Log.i("BLE", "🔍 Discovered GATT Services:")
                 gatt.services?.let { services ->
@@ -247,11 +250,17 @@ class BleModel(app: Application): AndroidViewModel(app) {
     }
 
     private fun sendKeepAlive() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val result = httpClient.sendKeepAlive()
-            Log.v("BLE", "KeepAlive returned $result")
-        }
         handler.postDelayed({
+            CoroutineScope(Dispatchers.IO).launch {
+                val result = httpClient.sendKeepAlive()
+                Log.v("BLE", "KeepAlive returned $result")
+                if (result.startsWith("error:")) {
+                    properties["keep_alive"] = "Error"
+                } else {
+                    val now = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
+                    properties["keep_alive"] = now
+                }
+            }
             sendKeepAlive()
         }, 5000)
     }

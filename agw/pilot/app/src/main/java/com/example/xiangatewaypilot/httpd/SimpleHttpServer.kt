@@ -1,14 +1,13 @@
 package com.example.xiangatewaypilot.httpd
 
 import android.content.Context
-import android.content.Intent
 import android.util.Log
-import com.example.xiangatewaypilot.model.main.BleModel
+import com.example.xiangatewaypilot.model.main.MainModel
 import fi.iki.elonen.NanoHTTPD
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-class SimpleHttpServer(private val context: Context, port: Int, val vm: BleModel) : NanoHTTPD(port) {
+class SimpleHttpServer(private val context: Context, port: Int, val vm: MainModel) : NanoHTTPD(port) {
     private val TAG = this::class.java.simpleName
 
     override fun serve(session: IHTTPSession): Response {

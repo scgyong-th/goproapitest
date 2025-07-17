@@ -11,7 +11,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.ViewModelProvider
 import com.example.xiangatewaypilot.constants.GoProUuids
 import com.example.xiangatewaypilot.httpd.SimpleHttpServer
-import com.example.xiangatewaypilot.model.main.BleModel
+import com.example.xiangatewaypilot.model.main.MainModel
 import com.example.xiangatewaypilot.ui.composable.MainScreen
 import java.io.IOException
 
@@ -19,13 +19,13 @@ class MainActivity : ComponentActivity() {
     private val TAG = this::class.java.simpleName
 
     private lateinit var server: SimpleHttpServer
-    private lateinit var vm: BleModel
+    private lateinit var vm: MainModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         GoProUuids.init(this)
         enableEdgeToEdge()
 
-        vm = ViewModelProvider(this)[BleModel::class.java]
+        vm = ViewModelProvider(this)[MainModel::class.java]
         startWebServer()
 
         setContent {

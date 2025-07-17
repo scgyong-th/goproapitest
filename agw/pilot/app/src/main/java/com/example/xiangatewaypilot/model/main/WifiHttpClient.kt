@@ -16,6 +16,7 @@ import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -35,11 +36,7 @@ class WifiHttpClient(val context: Context) {
     }
     suspend fun sendKeepAlive(): String {
         try {
-            val response = client.post("$BASE_URL/gp/gpControl/command/keep_alive") {
-                contentType(ContentType.Application.Json)
-                setBody("{}") // GoPro에서는 바디 없이도 처리됨
-            }
-
+            val response = client.get("$BASE_URL/gopro/camera   /keep_alive")
             val body = response.body<String>()
             Log.d("GoProHTTP", "✅ KeepAlive response: $body")
             return body

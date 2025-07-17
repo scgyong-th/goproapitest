@@ -26,11 +26,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.xiangatewaypilot.model.scan.ScannedDeviceEntry
-import com.example.xiangatewaypilot.model.main.BleModel
+import com.example.xiangatewaypilot.model.main.MainModel
 import com.example.xiangatewaypilot.ui.activity.ScanActivity
 
 @Composable
-fun MainScreen(viewModel: BleModel) {
+fun MainScreen(viewModel: MainModel) {
     val selectedDevice by viewModel.selectedDevice.collectAsState()
     val context = LocalContext.current
 
@@ -100,6 +100,7 @@ fun PropsView(props: Map<String, String>) {
             Text("WiFi SSID: ${props["wifi_ssid"] ?: "N/A"}")
             Text("WiFi Pass: ${props["wifi_password"] ?: "N/A"}")
             Text("WiFi AP Mode: ${props["ap_mode"] ?: "N/A"}")
+            Text("Keep Alive: ${props["keep_alive"] ?: "N/A"}")
         }
     }
 }
@@ -107,7 +108,7 @@ fun PropsView(props: Map<String, String>) {
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    MainScreen(BleModel(Application()))
+    MainScreen(MainModel(Application()))
 }
 
 @Preview(showBackground = true)
