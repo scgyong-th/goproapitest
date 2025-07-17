@@ -15,6 +15,9 @@
   * Pilot 제작을 진행하며 한 일 기록
 * [Pilot Works 0715](Works_0715.md)
   * 7/11~7/15 까지의 작업 기록
+* [Pilot Works 0715](Works_0717.md)
+  * BLE 연결 및 Wifi/HTTP 연결
+
 ## Milestones
 * [Milestones](Milestones.md)
   * 대략의 프로젝트 마일스톤
