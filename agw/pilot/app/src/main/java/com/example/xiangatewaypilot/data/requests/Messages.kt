@@ -16,6 +16,11 @@ class GetHardwareInfo(onReturn: (GetHardwareInfoResponse)->Unit) : BleRequest.Wr
     }
 }
 
+class CommandRequest(commandId: Byte, onReturn: ((NotifiedResponse) -> Unit)? = null) : BleRequest.Write(
+    characteristic = CharCache[ID2.CHAR_Command]!!,
+    value = byteArrayOf(0x01, commandId),
+    onReturn = onReturn
+)
 
 class GetWifiApSsid(onReturn: (String)->Unit) : BleRequest.Read(
     characteristic = CharCache[ID2.CHAR_WiFi_AP_SSID]!!,

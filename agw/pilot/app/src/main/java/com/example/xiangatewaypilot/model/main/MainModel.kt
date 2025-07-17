@@ -18,7 +18,10 @@ import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.AndroidViewModel
 import com.example.xiangatewaypilot.constants.GoProUuids
+import com.example.xiangatewaypilot.data.ResponseFactory
 import com.example.xiangatewaypilot.data.requests.BleRequest
+import com.example.xiangatewaypilot.data.requests.CommandId
+import com.example.xiangatewaypilot.data.requests.CommandRequest
 import com.example.xiangatewaypilot.data.requests.GetHardwareInfo
 import com.example.xiangatewaypilot.data.requests.GetWifiApPassword
 import com.example.xiangatewaypilot.data.requests.GetWifiApSsid
@@ -26,7 +29,6 @@ import com.example.xiangatewaypilot.data.requests.QueryId
 import com.example.xiangatewaypilot.data.requests.QueryRequest
 import com.example.xiangatewaypilot.data.requests.SetApControl
 import com.example.xiangatewaypilot.data.requests.StatusId
-import com.example.xiangatewaypilot.data.ResponseFactory
 import com.example.xiangatewaypilot.model.scan.ScannedDeviceEntry
 import com.example.xiangatewaypilot.util.toHexString
 import kotlinx.coroutines.CoroutineScope
@@ -246,7 +248,7 @@ class MainModel(app: Application): AndroidViewModel(app) {
         val password = properties["wifi_password"] ?: ""
         httpClient.connect(ssid, password)
 
-        sendKeepAlive()
+        //sendKeepAlive()
     }
 
     private fun sendKeepAlive() {
@@ -258,7 +260,7 @@ class MainModel(app: Application): AndroidViewModel(app) {
                     properties["keep_alive"] = "Error"
                 } else {
                     val now = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
-                    properties["keep_alive"] = now
+                    properties["keep_alive"] = "Wifi $now"
                 }
             }
             sendKeepAlive()
@@ -297,6 +299,22 @@ class MainModel(app: Application): AndroidViewModel(app) {
         }
     }
 
+    private var keepAliveReservedOn: Long = 0
+    private fun reserveKeepAlive() {
+        keepAliveReservedOn = System.currentTimeMillis()
+        Log.v("BLE", "keepAliveReserved on $keepAliveReservedOn")
+        val reservedOn = keepAliveReservedOn
+        handler.postDelayed({
+            if (reservedOn == keepAliveReservedOn) {
+                enqueueRequest(CommandRequest(CommandId.KEEP_ALIVE) {
+                    val now = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
+                    properties["keep_alive"] = "BLE $now"
+                })
+            } else {
+                Log.v("BLE", "reservedOn=$reservedOn now reserved=$keepAliveReservedOn")
+            }
+        }, 3000)
+    }
     private val requestQueue: ArrayDeque<BleRequest> = ArrayDeque()
     private var isProcessing = false
     private var requestForNotify: BleRequest.Write? = null
@@ -322,7 +340,11 @@ class MainModel(app: Application): AndroidViewModel(app) {
         Log.v("BLE", "In processNext(): $isProcessing or $requestForNotify")
         if (isProcessing || requestForNotify != null) return
 
-        val request = requestQueue.removeFirstOrNull() ?: return
+        val request = requestQueue.removeFirstOrNull()
+        if (request == null) {
+            reserveKeepAlive()
+            return
+        }
         Log.v("BLE", "popped: $request")
         isProcessing = true
 
