@@ -29,8 +29,11 @@ import com.example.xiangatewaypilot.data.requests.StatusId
 import com.example.xiangatewaypilot.data.ResponseFactory
 import com.example.xiangatewaypilot.model.scan.ScannedDeviceEntry
 import com.example.xiangatewaypilot.util.toHexString
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 class BleModel(app: Application): AndroidViewModel(app) {
@@ -45,6 +48,8 @@ class BleModel(app: Application): AndroidViewModel(app) {
 
     private val handler: Handler by lazy { Handler(Looper.getMainLooper()) }
     val notifyCharacteristics = mutableListOf<BluetoothGattCharacteristic>()
+
+    private val httpClient: WifiHttpClient by lazy { WifiHttpClient(app) }
 
     private val bluetoothAdapter: BluetoothAdapter? by lazy {
         val manager = app.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager?
@@ -215,6 +220,7 @@ class BleModel(app: Application): AndroidViewModel(app) {
         })
         queryApMode { enabled ->
             Log.d("BLE", "AP_MODE_ENABLED (after enabling) resp: $enabled")
+            connectToWifi()
         }
     }
 
@@ -230,6 +236,24 @@ class BleModel(app: Application): AndroidViewModel(app) {
         enqueueRequest(SetApControl(enables) { resp ->
             onResult?.invoke((resp.status == 0))
         })
+    }
+
+    fun connectToWifi() {
+        val ssid = properties["wifi_ssid"] ?: ""
+        val password = properties["wifi_password"] ?: ""
+        httpClient.connect(ssid, password)
+
+        sendKeepAlive()
+    }
+
+    private fun sendKeepAlive() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = httpClient.sendKeepAlive()
+            Log.v("BLE", "KeepAlive returned $result")
+        }
+        handler.postDelayed({
+            sendKeepAlive()
+        }, 5000)
     }
 
     @SuppressLint("MissingPermission")

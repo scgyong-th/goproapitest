@@ -29,9 +29,12 @@ class SimpleHttpServer(private val context: Context, port: Int, val vm: BleModel
 //                context.sendBroadcast(intent)
                 Log.d(TAG, "Trying to connect")
                 vm.connect()
-                newFixedLengthResponse("Hello from NanoHTTPD!")
+                newFixedLengthResponse("Connecting to BLE Device\n")
             }
-
+            uri == "/app/wifi/connect" && method == Method.GET -> {
+                vm.connectToWifi()
+                newFixedLengthResponse("Trying to connect to Wifi...")
+            }
             uri.startsWith("/app/status/ap_mode") && method == Method.GET -> {
                 val latch = CountDownLatch(1)
                 var enabled = "timeout"
