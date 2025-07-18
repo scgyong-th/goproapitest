@@ -16,6 +16,8 @@ class BleRequest:
     def messageBytes(self):
         return ''.join(f'{b:02X}' for b in self.value)
 
+    def toForwardPath(self):
+        return f'fw/{self.characteristic}/{self.messageBytes()}'
 
 class BleReadRequest(BleRequest):
     def __init__(self, characteristic, on_return=None):
@@ -127,4 +129,4 @@ if __name__ == "__main__":
         qName, qId, subType = case
         for name, value in const_members(subType):
             req = QueryRequest(qId, value, None)
-            print(f"{qName}:{name}({value}) {req.toJson()}")
+            print(f"{qName}:{name}({value}) {req.toJson()} {req.toForwardPath()}")

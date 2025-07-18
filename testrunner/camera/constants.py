@@ -1,3 +1,4 @@
+
 class ID2:
     # Services
     GP_0001 = "0001"  # GoPro Wifi Access Point
