@@ -51,6 +51,13 @@ class ID2:
         GP_0092: GP_0090,
     }
 
+    response = {
+        GP_0091: GP_0092,
+        GP_0072: GP_0073,
+        GP_0074: GP_0075,
+        GP_0076: GP_0077,
+    }
+
 class QueryId:
     GET_SETTING_VALUES = 0x12
     GET_STATUS_VALUES = 0x13
