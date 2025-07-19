@@ -14,6 +14,7 @@
 - `pytest` 실행
 
   - `PYTHONPATH=. pytest --alluredir=results/res_250719_0422/`
+    - `camera` module 을 import 하기 위해서는 현재 폴더 (`.`) 가 path 에 추가되어야 한다.
   - `pytest` 를 실행하며 `*.json` 파일을 남김
   - 결과를 저장하는 폴더에 날짜/시각 을 적기로 결정
 - Result 로부터 Report 생성
