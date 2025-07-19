@@ -70,19 +70,17 @@ class SimpleHttpServer(private val context: Context, port: Int, val vm: MainMode
             }
             uri.startsWith("/fw/") -> {
                 val latch = CountDownLatch(1)
-                var packets = "[]"
-                var error = "timeout"
+                var json = """{"error":"timeout"}"""
 
-                vm.enqueueRequest(ForwardRequest(uri) { strings ->
-                    packets = "[" + strings.map { "\"$it\"" }.joinToString(",") + "]"
-                    error = ""
+                vm.enqueueRequest(ForwardRequest(uri) { req, resp ->
+                    resp?.let { json = it.toJson() }
                     latch.countDown()
                 })
 
                 // 최대 2초 기다리기
                 val completed = latch.await(2000, TimeUnit.MILLISECONDS)
 
-                newFixedLengthResponse("""{"packets": $packets, "error": "$error"}""")
+                newFixedLengthResponse(json)
             }
             uri == "/test" && method == Method.POST -> {
                 val body = session.inputStream.bufferedReader().readText()
