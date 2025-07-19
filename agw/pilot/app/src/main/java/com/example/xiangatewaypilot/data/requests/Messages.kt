@@ -6,48 +6,48 @@ import com.example.xiangatewaypilot.data.responses.NotifiedResponse
 import com.example.xiangatewaypilot.data.responses.QueryResponse
 import com.example.xiangatewaypilot.model.main.CharCache
 
-class GetHardwareInfo(onReturn: (GetHardwareInfoResponse)->Unit) : BleRequest.Write(
+class GetHardwareInfo(onResponse: (BleRequest, GetHardwareInfoResponse)->Unit) : BleRequest.Write(
     characteristic = CharCache[ID2.CHAR_Command]!!,
     value = byteArrayOf(0x01, CommandId.GET_HARDWARE_INFO),
-    onReturn = { it -> onReturn(it as GetHardwareInfoResponse) }
+    onNotifiedResponse = { req, resp -> onResponse(req, resp as GetHardwareInfoResponse) }
 ) {
     init {
         tryCount = 10
     }
 }
 
-class CommandRequest(commandId: Byte, onReturn: ((NotifiedResponse) -> Unit)? = null) : BleRequest.Write(
+class CommandRequest(commandId: Byte, onResponse: ((BleRequest, NotifiedResponse) -> Unit)? = null) : BleRequest.Write(
     characteristic = CharCache[ID2.CHAR_Command]!!,
     value = byteArrayOf(0x01, commandId),
-    onReturn = onReturn
+    onNotifiedResponse = onResponse
 )
 
-class GetWifiApSsid(onReturn: (String)->Unit) : BleRequest.Read(
+class GetWifiApSsid(onResponse: (BleRequest, String)->Unit) : BleRequest.Read(
     characteristic = CharCache[ID2.CHAR_WiFi_AP_SSID]!!,
-    onReturn = { it -> onReturn(String(it ?: ByteArray(0), Charsets.UTF_8)) }
+    onResponse = { req, resp -> onResponse(req, String(resp ?: ByteArray(0), Charsets.UTF_8)) }
 )
 
-class GetWifiApPassword(onReturn: (String)->Unit) : BleRequest.Read(
+class GetWifiApPassword(onResponse: (BleRequest, String)->Unit) : BleRequest.Read(
     characteristic = CharCache[ID2.CHAR_WiFi_AP_Password]!!,
-    onReturn = { it -> onReturn(String(it ?: ByteArray(0), Charsets.UTF_8)) }
+    onResponse = { req, resp -> onResponse(req, String(resp ?: ByteArray(0), Charsets.UTF_8)) }
 )
 
-class SetApControl(enables: Boolean, onReturn: (NotifiedResponse)->Unit) : BleRequest.Write(
+class SetApControl(enables: Boolean, onResponse: (BleRequest, NotifiedResponse)->Unit) : BleRequest.Write(
     characteristic = CharCache[ID2.CHAR_Command]!!,
     value = byteArrayOf(0x03, CommandId.SET_AP_CONTROL, 0x01, if (enables) 0x01 else 0x00),
-    onReturn = onReturn
+    onNotifiedResponse = onResponse
 )
 
-class QueryRequest(queryId: Byte, ids: ByteArray, onReturn: (QueryResponse)->Unit) : BleRequest.Write(
+class QueryRequest(queryId: Byte, ids: ByteArray, onResponse: (BleRequest, QueryResponse)->Unit) : BleRequest.Write(
     characteristic = CharCache[ID2.CHAR_Query]!!,
     value = byteArrayOf((ids.size + 1).toByte(), queryId) + ids,
-    onReturn = { it -> onReturn(it as QueryResponse) }
+    onNotifiedResponse = { req, resp -> onResponse(req, resp as QueryResponse) }
 ) {
     constructor(
         queryId: Byte,
         id: Byte,
-        onReturn: (QueryResponse) -> Unit
-    ) : this(queryId, byteArrayOf(id), onReturn)
+        onResponse: (BleRequest, QueryResponse) -> Unit
+    ) : this(queryId, byteArrayOf(id), onResponse)
 }
 
 object QueryId {

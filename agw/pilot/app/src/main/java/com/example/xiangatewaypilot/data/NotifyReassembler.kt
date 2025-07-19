@@ -1,4 +1,4 @@
-package com.example.xiangatewaypilot.model.main
+package com.example.xiangatewaypilot.data
 
 import android.util.Log
 import com.example.xiangatewaypilot.util.toHexString

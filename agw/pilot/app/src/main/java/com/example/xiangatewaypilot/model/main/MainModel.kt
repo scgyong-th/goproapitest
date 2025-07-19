@@ -18,7 +18,7 @@ import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.AndroidViewModel
 import com.example.xiangatewaypilot.constants.GoProUuids
-import com.example.xiangatewaypilot.data.ResponseFactory
+import com.example.xiangatewaypilot.data.NotifyReassembler
 import com.example.xiangatewaypilot.data.requests.BleRequest
 import com.example.xiangatewaypilot.data.requests.CommandId
 import com.example.xiangatewaypilot.data.requests.CommandRequest
@@ -148,28 +148,9 @@ class MainModel(app: Application): AndroidViewModel(app) {
 
         @Deprecated("Deprecated by Android API", ReplaceWith("newer callback if exists"))
         override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
-            val data = characteristic.value
-            Log.v("BLE", "CharChange: (${data.size}) ${data.toHexString()} on char=${characteristic.uuid}")
-            val assembled = notifyReassembler.append(data)
-            if (assembled == null) {
-                //Log.i("BLE", "🔔 Notify from ${characteristic.uuid}: ${data.toHexString()}")
-                return
-            }
-
-            Log.d("BLE", "Assembled: ${assembled.toHexString()}")
-            val resp = ResponseFactory.parse(characteristic.uuid.toString(), assembled)
-            resp?.let {
-                Log.d("BLE", "JSON: ${it.toJson()}")
-                handler.post {
-                    val request = requestForNotify
-                    if (requestForNotify != null) {
-                        requestForNotify = null
-                        finishRequest()
-                    }
-
-                    request?.setResponse(resp)
-                }
-            }
+            val bytes = characteristic.value
+            Log.v("BLE", "CharChange: (${bytes.size}) ${bytes.toHexString()} on char=${characteristic.uuid}")
+            handleRemoteBytes(bytes, characteristic)
         }
 
         @Deprecated("Deprecated in Java")
@@ -178,17 +159,9 @@ class MainModel(app: Application): AndroidViewModel(app) {
             characteristic: BluetoothGattCharacteristic,
             status: Int
         ) {
-            val value = characteristic.value
-            Log.d("BLE", "onCharRead: char=${characteristic.uuid}, value=${value.toHexString()}, status=${status}")
-
-            handler.post {
-                val request = requestForRead
-                if (requestForRead != null) {
-                    requestForRead = null
-                    finishRequest()
-                }
-                request?.setResponse(value)
-            }
+            val bytes = characteristic.value
+            Log.d("BLE", "onCharRead: char=${characteristic.uuid}, value=${bytes.toHexString()}, status=${status}")
+            handleRemoteBytes(bytes, characteristic)
         }
 
         override fun onDescriptorWrite(
@@ -203,24 +176,38 @@ class MainModel(app: Application): AndroidViewModel(app) {
         }
     }
 
+    private fun handleRemoteBytes(data: ByteArray, characteristic: BluetoothGattCharacteristic) {
+        val request = waitingRequest
+        if (request == null) {
+            Log.e("BLE", "waitingRequest is null on onCharChange")
+            return
+        }
+        val processed = request.handleResponse(data, characteristic)
+        if (!processed) return
+        handler.post {
+            request.invokeCallback()
+            finishRequest()
+        }
+    }
+
     private fun startHandshake() {
         Log.d("BLE", "startHandshake()")
-        enqueueRequest(GetHardwareInfo() { resp ->
+        enqueueRequest(GetHardwareInfo() { req, resp ->
             Log.d("BLE", "resp: ${resp.toJson()}")
             properties["deviceJson"] = resp.toJson()
         })
-        enqueueRequest(GetWifiApSsid() { ssid ->
+        enqueueRequest(GetWifiApSsid() { req, ssid ->
             Log.d("BLE", "SSID: $ssid")
             properties["wifi_ssid"] = ssid
         })
-        enqueueRequest(GetWifiApPassword() { password ->
+        enqueueRequest(GetWifiApPassword() { req, password ->
             Log.d("BLE", "Password: $password")
             properties["wifi_password"] = password
         })
         queryApMode { enabled ->
             Log.d("BLE", "AP_MODE_ENABLED (before enabling) resp: $enabled")
         }
-        enqueueRequest(SetApControl(true) { resp ->
+        enqueueRequest(SetApControl(true) { req, resp ->
             Log.d("BLE", "resp: ${resp.toJson()}")
         })
         queryApMode { enabled ->
@@ -230,7 +217,7 @@ class MainModel(app: Application): AndroidViewModel(app) {
     }
 
     fun queryApMode(onResult: ((Boolean)->Unit)?) {
-        enqueueRequest(QueryRequest(QueryId.GET_STATUS_VALUES, StatusId.AP_MODE_ENABLED) { resp->
+        enqueueRequest(QueryRequest(QueryId.GET_STATUS_VALUES, StatusId.AP_MODE_ENABLED) { _, resp->
             Log.d("BLE", "AP_MODE_ENABLED resp: ${resp.byteValue}")
             properties["ap_mode"] = if (resp.byteValue == 1) "enabled" else "disabled"
             onResult?.invoke(resp.byteValue == 1)
@@ -238,7 +225,7 @@ class MainModel(app: Application): AndroidViewModel(app) {
     }
 
     fun setApMode(enables: Boolean, onResult: ((Boolean)->Unit)?) {
-        enqueueRequest(SetApControl(enables) { resp ->
+        enqueueRequest(SetApControl(enables) { _, resp ->
             onResult?.invoke((resp.status == 0))
         })
     }
@@ -251,7 +238,7 @@ class MainModel(app: Application): AndroidViewModel(app) {
         //sendKeepAlive()
     }
 
-    private fun sendKeepAlive() {
+    private fun sendKeepAliveHttp() {
         handler.postDelayed({
             CoroutineScope(Dispatchers.IO).launch {
                 val result = httpClient.sendKeepAlive()
@@ -263,7 +250,7 @@ class MainModel(app: Application): AndroidViewModel(app) {
                     properties["keep_alive"] = "Wifi $now"
                 }
             }
-            sendKeepAlive()
+            sendKeepAliveHttp()
         }, 5000)
     }
 
@@ -306,19 +293,18 @@ class MainModel(app: Application): AndroidViewModel(app) {
         val reservedOn = keepAliveReservedOn
         handler.postDelayed({
             if (reservedOn == keepAliveReservedOn) {
-                enqueueRequest(CommandRequest(CommandId.KEEP_ALIVE) {
+                enqueueRequest(CommandRequest(CommandId.KEEP_ALIVE) { req, resp ->
                     val now = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
                     properties["keep_alive"] = "BLE $now"
                 })
             } else {
-                Log.v("BLE", "reservedOn=$reservedOn now reserved=$keepAliveReservedOn")
+                Log.v("BLE", "ignoring Alive mismatch: reservedOn=$reservedOn now reserved=$keepAliveReservedOn")
             }
         }, 3000)
     }
     private val requestQueue: ArrayDeque<BleRequest> = ArrayDeque()
-    private var isProcessing = false
-    private var requestForNotify: BleRequest.Write? = null
-    private var requestForRead: BleRequest.Read? = null
+    private var _isProcessing = false
+    private var waitingRequest: BleRequest? = null
     private var requestedOn: Long = 0
 
     fun enqueueRequest(request: BleRequest) {
@@ -337,8 +323,8 @@ class MainModel(app: Application): AndroidViewModel(app) {
     }
     @SuppressLint("MissingPermission")
     private fun processNext() {
-        Log.v("BLE", "In processNext(): $isProcessing or $requestForNotify")
-        if (isProcessing || requestForNotify != null) return
+        Log.v("BLE", "In processNext(): $waitingRequest")
+        if (waitingRequest != null) return
 
         val request = requestQueue.removeFirstOrNull()
         if (request == null) {
@@ -346,39 +332,41 @@ class MainModel(app: Application): AndroidViewModel(app) {
             return
         }
         Log.v("BLE", "popped: $request")
-        isProcessing = true
+        waitingRequest = request
+        //isProcessing = true
 
-        when (request) {
-            is BleRequest.Read -> {
-                requestForRead = request
-                Log.v("BLE", "before read")
-                val success = gatt?.readCharacteristic(request.characteristic) == true
-                Log.v("BLE", "after  read: $success")
-                if (!success) {
-                    handleRequestFailure(request)
-                } else {
-                    waitForResponse()
-                }
+        if (request.reads) {
+            Log.v("BLE", "before read")
+            val success = gatt?.readCharacteristic(request.characteristic) == true
+            Log.v("BLE", "after  read: $success")
+            if (!success) {
+                handleRequestFailure(request)
+            } else {
+                waitForResponse()
             }
+        } else {
+            val writeRequest = request as? BleRequest.Write
+            if (writeRequest == null) {
+                Log.e("BLE", "Requesst is not a BleRequest.Write: $request")
+                finishRequest()
+                return
+            }
+            request.characteristic.value = request.value
+            val success = gatt?.writeCharacteristic(request.characteristic) == true
 
-            is BleRequest.Write -> {
-                request.characteristic.value = request.value
-                val success = gatt?.writeCharacteristic(request.characteristic) == true
+            Log.d("BLE", "Write: ${request.value.toHexString()} $success $gatt")
 
-                Log.d("BLE", "Write: ${request.value.toHexString()} ${success} $gatt")
-
-                if (!success) {
-                    handleRequestFailure(request)
-                    return
-                }
+            if (!success) {
+                handleRequestFailure(request)
+                return
+            }
+            val shouldWait = (request as? BleRequest.Write)?.waitForResponse ?: false
+            if (shouldWait) {
+                // 👇 response notify가 올 때까지 block
+                waitForResponse()
+            } else {
                 // 👇 write 후 response가 없는 명령이면 바로 다음 처리
-                if (!request.waitForResponse) {
-                    finishRequest()
-                } else {
-                    // 👇 response notify가 올 때까지 block
-                    requestForNotify = request
-                    waitForResponse()
-                }
+                finishRequest()
             }
         }
     }
@@ -387,21 +375,19 @@ class MainModel(app: Application): AndroidViewModel(app) {
         val reqOn = requestedOn
         handler.postDelayed({
             if (reqOn == requestedOn) {
-                Log.w("BLE", "Timeout: $requestForNotify read=$requestForRead")
+                Log.w("BLE", "Timeout: $waitingRequest")
                 finishRequest()
             } else {
-                Log.v("BLE", "ignoring timeout because $reqOn != $requestedOn")
+                Log.v("BLE", "ignoring Wait mismatch: $reqOn != $requestedOn")
             }
         }, 1000)
     }
     private fun finishRequest() {
-        Log.d("BLE", "finishing Request: notify=$requestForNotify read=$requestForRead")
+        Log.d("BLE", "finishing Request: $waitingRequest")
         requestedOn = 0
-        requestForRead = null
-        requestForNotify = null
         // delayed processNext()
         handler.postDelayed({
-            isProcessing = false
+            waitingRequest = null
             Log.d("BLE", "After Delay?")
             processNext()
         }, 100)
