@@ -14,6 +14,10 @@ sealed class BleRequest(val characteristic: BluetoothGattCharacteristic,
     var resultBytes: ByteArray? = null
     val valueString: String get() = String(resultBytes ?: ByteArray(0), Charsets.UTF_8)
     open fun handleResponse(bytes: ByteArray, characteristic: BluetoothGattCharacteristic): Boolean {
+        return handleBytesResponse(bytes)
+    }
+
+    fun handleBytesResponse(bytes: ByteArray): Boolean {
         this.resultBytes = bytes
         return true
     }
@@ -35,8 +39,8 @@ sealed class BleRequest(val characteristic: BluetoothGattCharacteristic,
         val waitForResponse: Boolean = true, // 👈 response 여부 제어
         private val onNotifiedResponse: ((BleRequest, NotifiedResponse)->Unit)? = null
     ) : BleRequest(characteristic, reads = false) {
-        private var response: NotifiedResponse? = null
-        private val reassembler = NotifyReassembler()
+        protected var response: NotifiedResponse? = null
+        protected val reassembler = NotifyReassembler()
 
         // called in BLE callback thread
         override fun handleResponse(

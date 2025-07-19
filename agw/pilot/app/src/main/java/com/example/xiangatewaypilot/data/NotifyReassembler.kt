@@ -25,6 +25,7 @@ class NotifyReassembler(private val timeoutMillis: Long = 2000) {
     private var firstBodyPayloadSize: Int = 0
     private var downloadedBytes: Int = 0
     private var lastReceivedTime: Long = 0
+    var lastIndex: Int = 0
 
     fun append(fragment: ByteArray): ByteArray? {
         if (fragment.size < 3) {
@@ -79,6 +80,8 @@ class NotifyReassembler(private val timeoutMillis: Long = 2000) {
         totalPayloadLength = messageLength
         downloadedBytes = firstBodyPayloadSize
         remainingPacketCount = ceil((messageLength - firstBodyPayloadSize) / 19.0).toInt()
+
+        lastIndex = 0
     }
 
     private fun reset() {
@@ -93,6 +96,7 @@ class NotifyReassembler(private val timeoutMillis: Long = 2000) {
     private fun appendContinuationPacket(fragment: ByteArray) : ByteArray? {
         val seq = fragment[0].toInt() and SEQ_CONTINUATION_MASK
         val index = getIndexFor(seq)
+        lastIndex = index
         indexSet.add(index)
         val offset = firstBodyPayloadSize + (index - 1) * 19
         if (offset > fullMessage.size) {

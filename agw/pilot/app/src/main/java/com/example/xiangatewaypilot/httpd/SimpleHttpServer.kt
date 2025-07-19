@@ -2,6 +2,7 @@ package com.example.xiangatewaypilot.httpd
 
 import android.content.Context
 import android.util.Log
+import com.example.xiangatewaypilot.data.requests.ForwardRequest
 import com.example.xiangatewaypilot.model.main.MainModel
 import fi.iki.elonen.NanoHTTPD
 import java.util.concurrent.CountDownLatch
@@ -66,6 +67,22 @@ class SimpleHttpServer(private val context: Context, port: Int, val vm: MainMode
                 val completed = latch.await(2000, TimeUnit.MILLISECONDS)
 
                 newFixedLengthResponse("result: $result, enabled: $enabled")
+            }
+            uri.startsWith("/fw/") -> {
+                val latch = CountDownLatch(1)
+                var packets = "[]"
+                var error = "timeout"
+
+                vm.enqueueRequest(ForwardRequest(uri) { strings ->
+                    packets = "[" + strings.map { "\"$it\"" }.joinToString(",") + "]"
+                    error = ""
+                    latch.countDown()
+                })
+
+                // 최대 2초 기다리기
+                val completed = latch.await(2000, TimeUnit.MILLISECONDS)
+
+                newFixedLengthResponse("""{"packets": $packets, "error": "$error"}""")
             }
             uri == "/test" && method == Method.POST -> {
                 val body = session.inputStream.bufferedReader().readText()
