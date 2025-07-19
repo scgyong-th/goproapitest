@@ -15,5 +15,6 @@ def test_message(cfg):
     data = camera.parsers.assemble_packets(resp)
     print(f'Assembled bytes: {data.hex()}')
 
-    msg = camera.parsers.parse_response_data(data)
+    msg = camera.parsers.parse(resp_id2, data)
+    print(msg)
 
