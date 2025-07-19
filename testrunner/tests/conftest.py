@@ -3,6 +3,8 @@ import pytest
 import os
 from types import SimpleNamespace
 
+import camera
+
 @pytest.fixture(scope="session")
 def cfg():
     config_path = os.path.join(os.path.dirname(__file__), "test_config.json")
