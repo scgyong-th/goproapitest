@@ -1,40 +1,64 @@
 from . import register
 import camera
 
-def parse_get_hardware_info(data):
-    print(f'parse_get_hardware_info(len={len(data)})')
-    offset = 2  # 첫 2바이트는 responseId, status
+class Parser:
+    def __init__(self, data):
+        self.data = data
+        self.offset = 0
 
-    def next_bytes() -> bytes:
-        nonlocal offset
-        length = data[offset]
-        offset += 1
-        b = data[offset:offset + length]
-        offset += length
+    def next_bytes(self) -> bytes:
+        length = self.next_byte()
+        b = self.data[self.offset:self.offset + length]
+        self.offset += length
         return b
+    def next_byte(self) -> int:
+        length = self.data[self.offset]
+        self.offset += 1
+        return length
 
-    def next_string() -> str:
-        return next_bytes().decode("utf-8")        
+    def next_string(self) -> str:
+        o = self.offset
+        s = self.next_bytes().decode("utf-8")
+        print(f'offset={o} str={s}')
+        return s
 
-    ext_header = next_bytes()
+    def next_tlv(self):
+        t = self.next_byte()
+        v = self.next_bytes()
+        return t, v
 
-    result = {
-        "modelNumber": next_string(),
-        "modelName": next_string(),
-        # "deprecated": next_bytes()  # 생략됨
-        "firmwareVersion": next_string(),
-        "serialNumber": next_string(),
-        "apSsid": next_string(),
-        "apMacAddress": next_string(),
-    }
+    def parse(self):
+        assert false, 'Not Implmemented'
 
-    # 나머지는 reserved
-    reserved = data[offset:]
-    result["reserved"] = ' '.join(f"{b:02X}" for b in reserved)
+class CommandParser(Parser):
+    id2 = camera.ID2.CHAR_Command_Response
+    first_byte = None
+    def parse(self):
+        pass
 
-    return result
+class GetHardwareInfoParser(Parser):
+    id2 = camera.ID2.CHAR_Command_Response
+    first_byte = camera.CommandId.GET_HARDWARE_INFO
+    def parse(self):
 
-register(camera.ID2.CHAR_Command_Response, 
-    camera.CommandId.GET_HARDWARE_INFO, 
-    parse_get_hardware_info
-    )
+        print(f'parse_get_hardware_info(len={len(self.data)})')
+        self.offset = 2  # 첫 2바이트는 responseId, status
+        ext_header = self.next_bytes()
+
+        result = {
+            "modelNumber": self.next_string(),
+            "modelName": self.next_string(),
+            # "deprecated": next_bytes()  # 생략됨
+            "firmwareVersion": self.next_string(),
+            "serialNumber": self.next_string(),
+            "apSsid": self.next_string(),
+            "apMacAddress": self.next_string(),
+        }
+
+        # 나머지는 reserved
+        reserved = self.data[self.offset:]
+        result["reserved"] = ' '.join(f"{b:02X}" for b in reserved)
+
+        return result
+
+register(GetHardwareInfoParser)
