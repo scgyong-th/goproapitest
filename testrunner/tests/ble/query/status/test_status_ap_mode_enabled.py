@@ -3,7 +3,10 @@ import camera
 
 def test_message(cfg):
     # 1. 요청 객체 생성
-    req = camera.GetHardwareInfo(None)
+    req = camera.QueryRequest(
+        camera.QueryId.GET_STATUS_VALUES, 
+        camera.StatusId.AP_MODE_ENABLED,
+        None)
     url = f"{cfg.base_url}/{req.toForwardPath()}"
     print(f"Request: {url}")
 
@@ -25,6 +28,6 @@ def test_message(cfg):
     print(f"Assembled bytes: {data.hex()}")
 
     # 6. 파서 호출
-    (parser, msg) = camera.parsers.parse(resp_id2, data)
+    msg = camera.parsers.parse(resp_id2, data)
     print("Parsed Result:", msg)
 

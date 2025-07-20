@@ -50,6 +50,13 @@ class BleWriteRequest(BleRequest):
         if self.on_return:
             self.on_return(resp)
 
+class GetDateTime(BleWriteRequest):
+    def __init__(self, on_return):
+        super().__init__(
+            characteristic=ID2.CHAR_Command,
+            value=bytes([0x01, CommandId.GET_DATE_TIME]),
+            on_return=lambda it: on_return(it)
+        )
 
 class GetHardwareInfo(BleWriteRequest):
     def __init__(self, on_return):

@@ -9,12 +9,15 @@ def register(cls):
 
 def get(id2, first_byte):
     name = f'{id2}{first_byte:02x}'
-    return _factory[name]
+    return _factory[name] if name in _factory else None
 
 def parse(id2, byte_array):
     parser_class = get(id2, byte_array[0])
+    if not parser_class:
+        parser_class = get(id2, 0) # 0 == wildcard
     parser = parser_class(byte_array)
-    return parser.parse()
+    msg = parser.parse()
+    return parser, msg
 
 # 등록 대상 모듈을 명시적으로 import (자동 등록 유도)
 from . import response_data_parser  # <-- 이 줄 매우 중요
