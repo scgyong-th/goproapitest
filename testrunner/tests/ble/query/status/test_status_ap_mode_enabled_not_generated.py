@@ -20,7 +20,7 @@ def test_query_status_ap_mode_enabled(cfg):
     # TLV Response 확인
     assert statusId in msg['tlv']
 
-    value = msg['tlv'][statusId][0] # byte array 이기 때문에 [0] 을 붙여야 한다
+    value = msg['tlv'][statusId]
     print(f'AP_MODE_ENABLED={value}')
 
     # value 확인

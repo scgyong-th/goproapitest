@@ -74,11 +74,13 @@ class SimpleHttpServer(private val context: Context, port: Int, val vm: MainMode
 
                 vm.enqueueRequest(ForwardRequest(uri) { req, resp ->
                     resp?.let { json = it.toJson() }
+                    Log.d("httpd", "$uri -> $json")
                     latch.countDown()
                 })
 
                 // 최대 2초 기다리기
                 val completed = latch.await(2000, TimeUnit.MILLISECONDS)
+                Log.d("httpd", "$uri -> $json")
 
                 newFixedLengthResponse(json)
             }

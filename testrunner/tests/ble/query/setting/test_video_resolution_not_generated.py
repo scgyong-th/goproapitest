@@ -15,7 +15,7 @@ def test_query_setting_video_resolution(cfg):
     # TLV Response 확인
     assert SettingId.VIDEO_RESOLUTION in msg['tlv']
 
-    value = msg['tlv'][SettingId.VIDEO_RESOLUTION][0] # byte array 이기 때문에 [0] 을 붙여야 한다
+    value = msg['tlv'][SettingId.VIDEO_RESOLUTION]
     print(f'VIDEO_RESOLUTION={value}')
 
     # value 확인

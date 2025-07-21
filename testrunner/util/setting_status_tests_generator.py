@@ -30,8 +30,7 @@ def test_setting_{name}(cfg):
     assert msg["status"] == 0
     assert SettingId.{const} in msg["tlv"]
 
-    value = msg["tlv"][SettingId.{const}][0]
-    #assert len(msg['tlv'][SettingId.{const}]) == 1
+    value = msg["tlv"][SettingId.{const}]
     print("Setting {const} =", value)
 
     # TODO: Add valid value checks specific to {const}
@@ -49,8 +48,7 @@ def test_status_{name}(cfg):
     assert msg["status"] == 0
     assert StatusId.{const} in msg["tlv"]
 
-    value = msg["tlv"][StatusId.{const}][0]
-    #assert len(msg['tlv'][StatusId.{const}]) == 1
+    value = msg["tlv"][StatusId.{const}]
     print("Status {const} =", value)
 
     # TODO: Add valid value checks specific to {const}

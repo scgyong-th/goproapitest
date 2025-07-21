@@ -19,6 +19,10 @@ class Parser:
         val = int.from_bytes(self.data[self.offset:self.offset+2], 'big')
         self.offset += 2
         return val
+    def next_u32(self):
+        val = int.from_bytes(self.data[self.offset:self.offset+4], 'big')
+        self.offset += 4
+        return val
     def next_string(self) -> str:
         o = self.offset
         s = self.next_bytes().decode("utf-8")
@@ -28,6 +32,13 @@ class Parser:
     def next_tlv(self):
         t = self.next_byte()
         v = self.next_bytes()
+        l = len(v)
+        if l == 1:
+            v = v[0]
+        elif l == 2 or l == 4 or l == 8:
+            v = int.from_bytes(v, 'big')
+        else:
+            assert False, 'Unknown size TLV value. Should be pre-processed, not here.'
         return t, v
 
     def parse(self):
@@ -73,6 +84,19 @@ class QueryParser(Parser):
     def parse(self):
         print(f'QueryParser.parse(len={len(self.data)}) id=0x{self.data[0]:02x}')
         return self.parseCommonResponse()
+
+    def next_tlv(self):
+        t = self.data[self.offset]
+        print(f'next_tlv(), {self.responseId=}/{t=}')
+        if self.responseId == camera.QueryId.GET_SETTING_VALUES:
+            if t == camera.SettingId.NIGHTLAPSE_RATE:
+                t = self.next_byte()
+                l = self.next_byte()
+                assert l == 4
+                v = self.next_u32()
+                return t, v
+
+        return super().next_tlv()
 
 register(QueryParser)
 
