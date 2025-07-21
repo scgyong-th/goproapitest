@@ -19,6 +19,7 @@ class BleRequest:
     def toForwardPath(self):
         return f'fw/{self.characteristic}/{self.messageBytes()}'
 
+
 class BleReadRequest(BleRequest):
     def __init__(self, characteristic, on_return=None):
         super().__init__()

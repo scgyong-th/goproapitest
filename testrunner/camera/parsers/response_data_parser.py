@@ -16,7 +16,7 @@ class Parser:
         self.offset += 1
         return length
     def next_u16(self):
-        val = int.from_bytes(self.data[self.offset:self.offset+2], 'little')
+        val = int.from_bytes(self.data[self.offset:self.offset+2], 'big')
         self.offset += 2
         return val
     def next_string(self) -> str:
@@ -33,15 +33,16 @@ class Parser:
     def parse(self):
         assert false, 'Not Implmemented'
 
-class CommandParser(Parser):
-    id2 = camera.ID2.CHAR_Command_Response
-    first_byte = 0x00 # wild card
     def parseHeader(self):
         assert len(self.data) >= 2, 'Data too short'
 
         self.responseId = self.data[0]
         self.status = self.data[1]
         self.offset = 2  # 첫 2바이트는 responseId, status
+
+class CommandParser(Parser):
+    id2 = camera.ID2.CHAR_Command_Response
+    first_byte = 0x00 # wild card
 
     def parse(self):
         print(f'CommandParser.parse(len={len(self.data)}) id=0x{self.data[0]:02x}')
@@ -52,12 +53,6 @@ register(CommandParser)
 class QueryParser(Parser):
     id2 = camera.ID2.CHAR_Query_Response
     first_byte = 0x00 # wild card
-    def parseHeader(self):
-        assert len(self.data) >= 2, 'Data too short'
-
-        self.responseId = self.data[0]
-        self.status = self.data[1]
-        self.offset = 2  # 첫 2바이트는 responseId, status
 
     def parse(self):
         print(f'QueryParser.parse(len={len(self.data)}) id=0x{self.data[0]:02x}')
