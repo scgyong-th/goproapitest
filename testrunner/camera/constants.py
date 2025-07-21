@@ -220,3 +220,250 @@ class StatusId:
     SDCARD_TOTAL_CAPACITY_KB = 0x75
 
 
+# generated from util/possible_value_extractor.py
+StatusId.possible_values = {
+    0x01: {  # Battery Present (1)
+        0,  # False
+        1,  # True
+    },
+    0x02: {  # Internal Battery Bars (2)
+        0,  # Zero
+        1,  # One
+        2,  # Two
+        3,  # Three
+        4,  # Charging
+    },
+    0x06: {  # Overheating (6)
+        0,  # False
+        1,  # True
+    },
+    0x08: {  # Busy (8)
+        0,  # False
+        1,  # True
+    },
+    0x09: {  # Quick Capture (9)
+        0,  # False
+        1,  # True
+    },
+    0x0A: {  # Encoding (10)
+        0,  # False
+        1,  # True
+    },
+    0x0B: {  # LCD Lock (11)
+        0,  # False
+        1,  # True
+    },
+    0x11: {  # Wireless Connections Enabled (17)
+        0,  # False
+        1,  # True
+    },
+    0x13: {  # Pairing State (19)
+        0,  # Never Started
+        1,  # Started
+        2,  # Aborted
+        3,  # Cancelled
+        4,  # Completed
+    },
+    0x14: {  # Last Pairing Type (20)
+        0,  # Not Pairing
+        1,  # Pairing App
+        2,  # Pairing Remote Control
+        3,  # Pairing Bluetooth Device
+    },
+    0x16: {  # Wifi Scan State (22)
+        0,  # Never started
+        1,  # Started
+        2,  # Aborted
+        3,  # Canceled
+        4,  # Completed
+    },
+    0x18: {  # Wifi Provisioning State (24)
+        0,  # Never started
+        1,  # Started
+        2,  # Aborted
+        3,  # Canceled
+        4,  # Completed
+    },
+    0x1B: {  # Remote Connected (27)
+        0,  # False
+        1,  # True
+    },
+    0x20: {  # Preview Stream (32)
+        0,  # False
+        1,  # True
+    },
+    0x21: {  # Primary Storage (33)
+        -1,  # Unknown
+        0,  # OK
+        1,  # SD Card Full
+        2,  # SD Card Removed
+        3,  # SD Card Format Error
+        4,  # SD Card Busy
+        8,  # SD Card Swapped
+    },
+    0x29: {  # OTA (41)
+        0,  # Idle
+        1,  # Downloading
+        2,  # Verifying
+        3,  # Download Failed
+        4,  # Verify Failed
+        5,  # Ready
+        6,  # GoPro App Downloading
+        7,  # GoPro App Verifying
+        8,  # GoPro App Download Failed
+        9,  # GoPro App Verify Failed
+        10,  # GoPro App Ready
+    },
+    0x2A: {  # Pending FW Update Cancel (42)
+        0,  # False
+        1,  # True
+    },
+    0x2D: {  # Locate (45)
+        0,  # False
+        1,  # True
+    },
+    0x37: {  # Preview Stream Available (55)
+        0,  # False
+        1,  # True
+    },
+    0x41: {  # Liveview Exposure Select Mode (65)
+        0,  # Disabled
+        1,  # Auto
+        2,  # ISO Lock
+        3,  # Hemisphere
+    },
+    0x44: {  # GPS Lock (68)
+        0,  # False
+        1,  # True
+    },
+    0x45: {  # AP Mode (69)
+        0,  # False
+        1,  # True
+    },
+    0x4A: {  # Microphone Accessory (74)
+        0,  # Accessory not connected
+        1,  # Accessory connected
+        2,  # Accessory connected and a microphone is plugged into the accessory
+    },
+    0x4C: {  # Wireless Band (76)
+        0,  # 2.4 GHz
+        1,  # 5 GHz
+    },
+    0x4D: {  # Zoom Available (77)
+        0,  # False
+        1,  # True
+    },
+    0x4E: {  # Mobile Friendly (78)
+        0,  # False
+        1,  # True
+    },
+    0x4F: {  # FTU (79)
+        0,  # False
+        1,  # True
+    },
+    0x51: {  # 5GHZ Available (81)
+        0,  # False
+        1,  # True
+    },
+    0x52: {  # Ready (82)
+        0,  # False
+        1,  # True
+    },
+    0x53: {  # OTA Charged (83)
+        0,  # False
+        1,  # True
+    },
+    0x55: {  # Cold (85)
+        0,  # False
+        1,  # True
+    },
+    0x56: {  # Rotation (86)
+        0,  # 0 degrees (upright)
+        1,  # 180 degrees (upside down)
+        2,  # 90 degrees (laying on right side)
+        3,  # 270 degrees (laying on left side)
+    },
+    0x58: {  # Zoom while Encoding (88)
+        0,  # False
+        1,  # True
+    },
+    0x65: {  # Capture Delay Active (101)
+        0,  # False
+        1,  # True
+    },
+    0x66: {  # Media Mod State (102)
+        0,  # Microphone removed
+        2,  # Microphone only
+        3,  # Microphone with external microphone
+    },
+    0x67: {  # Time Warp Speed (103)
+        0,  # 15x
+        1,  # 30x
+        2,  # 60x
+        3,  # 150x
+        4,  # 300x
+        5,  # 900x
+        6,  # 1800x
+        7,  # 2x
+        8,  # 5x
+        9,  # 10x
+        10,  # Auto
+        11,  # 1x (realtime)
+        12,  # 1/2x (slow-motion)
+    },
+    0x68: {  # Linux Core (104)
+        0,  # False
+        1,  # True
+    },
+    0x69: {  # Lens Type (105)
+        0,  # Default
+        1,  # Max Lens
+        2,  # Max Lens 2.0
+        3,  # Max Lens 2.5
+        4,  # Macro Lens
+        5,  # Anamorphic Lens
+        6,  # Neutral Density 4
+        7,  # Neutral Density 8
+        8,  # Neutral Density 16
+        9,  # Neutral Density 32
+    },
+    0x6A: {  # Hindsight (106)
+        0,  # False
+        1,  # True
+    },
+    0x6C: {  # Scheduled Capture (108)
+        0,  # False
+        1,  # True
+    },
+    0x6E: {  # Display Mod Status (110)
+        0,  # 000 = Display Mod: 0, HDMI: 0, Display Mod Connected: False
+        1,  # 001 = Display Mod: 0, HDMI: 0, Display Mod Connected: True
+        2,  # 010 = Display Mod: 0, HDMI: 1, Display Mod Connected: False
+        3,  # 011 = Display Mod: 0, HDMI: 1, Display Mod Connected: True
+        4,  # 100 = Display Mod: 1, HDMI: 0, Display Mod Connected: False
+        5,  # 101 = Display Mod: 1, HDMI: 0, Display Mod Connected: True
+        6,  # 110 = Display Mod: 1, HDMI: 1, Display Mod Connected: False
+        7,  # 111 = Display Mod: 1, HDMI: 1, Display Mod Connected: True
+    },
+    0x6F: {  # SD Card Write Speed Error (111)
+        0,  # False
+        1,  # True
+    },
+    0x71: {  # Turbo Transfer (113)
+        0,  # False
+        1,  # True
+    },
+    0x72: {  # Camera Control ID (114)
+        0,  # Camera Idle: No one is attempting to change camera settings
+        1,  # Camera Control: Camera is in a menu or changing settings. To intervene, app must request control
+        2,  # Camera External Control: An outside entity (app) has control and is in a menu or modifying settings
+    },
+    0x73: {  # USB Connected (115)
+        0,  # False
+        1,  # True
+    },
+    0x74: {  # USB Controlled (116)
+        0,  # Disabled
+        1,  # Enabled
+    },
+}

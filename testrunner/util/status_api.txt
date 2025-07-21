@@ -1,0 +1,605 @@
+Statuses
+This section will describe each status and its supported values. See the Query section for operations to query status values.
+
+Status IDs
+Battery Present (1)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is the system’s internal battery present?
+
+Internal Battery Bars (2)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   Zero
+1   One
+2   Two
+3   Three
+4   Charging
+Rough approximation of internal battery level in bars (or charging)
+
+Overheating (6)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is the system currently overheating?
+
+Busy (8)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is the camera busy?
+
+Quick Capture (9)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is Quick Capture feature enabled?
+
+Encoding (10)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is the system currently encoding?
+
+LCD Lock (11)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is LCD lock active?
+
+Video Encoding Duration (13)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 32-bit unsigned big-endian.
+
+When encoding video, this is the duration (seconds) of the video so far; 0 otherwise
+
+Wireless Connections Enabled (17)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Are Wireless Connections enabled?
+
+Pairing State (19)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   Never Started
+1   Started
+2   Aborted
+3   Cancelled
+4   Completed
+Last Pairing Type (20)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   Not Pairing
+1   Pairing App
+2   Pairing Remote Control
+3   Pairing Bluetooth Device
+The last type of pairing in which the camera was engaged
+
+Last Pairing Success (21)
+https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 32-bit unsigned big-endian.
+
+Time since boot (milliseconds) of last successful pairing complete action
+
+Wifi Scan State (22)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   Never started
+1   Started
+2   Aborted
+3   Canceled
+4   Completed
+State of current scan for WiFi Access Points
+
+Last Wifi Scan Success (23)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 8-bit unsigned big-endian.
+
+Time since boot (milliseconds) that the WiFi Access Point scan completed
+
+Wifi Provisioning State (24)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   Never started
+1   Started
+2   Aborted
+3   Canceled
+4   Completed
+WiFi AP provisioning state
+
+Remote Version (26)
+https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 8-bit unsigned big-endian.
+
+Wireless remote control version
+
+Remote Connected (27)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is a wireless remote control connected?
+
+Pairing State (Legacy) (28)
+https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 8-bit unsigned big-endian.
+
+Wireless Pairing State. Each bit contains state information (see WirelessPairingStateFlags)
+
+Connected WiFi SSID (29)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a string value.
+
+The name of the wireless network that the camera is connected to where the camera is acting as a client/station.
+
+When read via BLE, this value is big-endian byte-encoded int32.
+
+Access Point SSID (30)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a string value.
+
+The name of the network that the camera sets up in AP mode for other devices to connect to.
+
+When read via BLE, this value is big-endian byte-encoded int32.
+
+Connected Devices (31)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 8-bit unsigned big-endian.
+
+The number of wireless devices connected to the camera
+
+Preview Stream (32)
+https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is Preview Stream enabled?
+
+Primary Storage (33)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+-1  Unknown
+0   OK
+1   SD Card Full
+2   SD Card Removed
+3   SD Card Format Error
+4   SD Card Busy
+8   SD Card Swapped
+Remaining Photos (34)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 32-bit unsigned big-endian.
+
+How many photos can be taken with current settings before sdcard is full.
+
+Alternatively, this is:
+
+the remaining timelapse capability if Setting 128 is set to Timelapse Photo
+
+the remaining nightlapse capability if Setting 128 is set to Nightlapse Photo
+
+Remaining Video Time (35)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 32-bit unsigned big-endian.
+
+How many seconds of video can be captured with current settings before sdcard is full
+
+Alternatively, this is:
+
+the remaining timelapse capability if Setting 128 is set to Timelapse Video
+
+the remaining nightlapse capability if Setting 128 is set to Nightlapse Video
+
+Photos (38)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 32-bit unsigned big-endian.
+
+Total number of photos on sdcard
+
+Videos (39)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 32-bit unsigned big-endian.
+
+Total number of videos on sdcard
+
+OTA (41)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   Idle
+1   Downloading
+2   Verifying
+3   Download Failed
+4   Verify Failed
+5   Ready
+6   GoPro App Downloading
+7   GoPro App Verifying
+8   GoPro App Download Failed
+9   GoPro App Verify Failed
+10  GoPro App Ready
+The current status of Over The Air (OTA) update
+
+Pending FW Update Cancel (42)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is there a pending request to cancel a firmware update download?
+
+Locate (45)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is locate camera feature active?
+
+Timelapse Interval Countdown (49)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 32-bit unsigned big-endian.
+
+The current timelapse interval countdown value (e.g. 5…4…3…2…1…)
+
+SD Card Remaining (54)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 64-bit unsigned big-endian.
+
+Remaining space on the sdcard in Kilobytes
+
+Preview Stream Available (55)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is preview stream supported in current recording/mode/secondary-stream?
+
+Wifi Bars (56)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 8-bit unsigned big-endian.
+
+WiFi signal strength in bars
+
+Active Hilights (58)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 8-bit unsigned big-endian.
+
+The number of hilights in currently-encoding video (value is set to 0 when encoding stops)
+
+Time Since Last Hilight (59)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 32-bit unsigned big-endian.
+
+Time since boot (milliseconds) of most recent hilight in encoding video (set to 0 when encoding stops)
+
+Minimum Status Poll Period (60)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 32-bit unsigned big-endian.
+
+The minimum time between camera status updates (milliseconds). Best practice is to not poll for status more often than this
+
+Liveview Exposure Select Mode (65)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   Disabled
+1   Auto
+2   ISO Lock
+3   Hemisphere
+Liveview Y (66)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 8-bit unsigned big-endian.
+
+Liveview Exposure Select: y-coordinate (percent)
+
+Liveview X (67)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 8-bit unsigned big-endian.
+
+Liveview Exposure Select: y-coordinate (percent)
+
+GPS Lock (68)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Does the camera currently have a GPS lock?
+
+AP Mode (69)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is AP mode enabled?
+
+Internal Battery Percentage (70)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 8-bit unsigned big-endian.
+
+Internal battery level as percentage
+
+Microphone Accessory (74)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   Accessory not connected
+1   Accessory connected
+2   Accessory connected and a microphone is plugged into the accessory
+Zoom Level (75)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 8-bit unsigned big-endian.
+
+Digital Zoom level as percentage
+
+Wireless Band (76)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   2.4 GHz
+1   5 GHz
+Zoom Available (77)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is Digital Zoom feature available?
+
+Mobile Friendly (78)
+https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Are current video settings mobile friendly? (related to video compression and frame rate)
+
+FTU (79)
+https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is the camera currently in First Time Use (FTU) UI flow?
+
+5GHZ Available (81)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is 5GHz wireless band available?
+
+Ready (82)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is the system fully booted and ready to accept commands?
+
+OTA Charged (83)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is the internal battery charged sufficiently to start Over The Air (OTA) update?
+
+Cold (85)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is the camera getting too cold to continue recording?
+
+Rotation (86)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   0 degrees (upright)
+1   180 degrees (upside down)
+2   90 degrees (laying on right side)
+3   270 degrees (laying on left side)
+Rotational orientation of the camera
+
+Zoom while Encoding (88)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is this camera model capable of zooming while encoding?
+
+Flatmode (89)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 8-bit unsigned big-endian.
+
+Current Flatmode ID
+
+Video Preset (93)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 32-bit unsigned big-endian.
+
+Current Video Preset (ID)
+
+Photo Preset (94)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 32-bit unsigned big-endian.
+
+Current Photo Preset (ID)
+
+Timelapse Preset (95)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 32-bit unsigned big-endian.
+
+Current Time Lapse Preset (ID)
+
+Preset Group (96)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 32-bit unsigned big-endian.
+
+Current Preset Group (ID) (corresponds to ui_mode_groups in settings.json)
+
+Preset (97)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 32-bit unsigned big-endian.
+
+Current Preset (ID)
+
+Preset Modified (98)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 32-bit unsigned big-endian.
+
+The value of this status is set to zero when the client sends a Get Preset Status message to the camera.
+
+The value of this status is set to a non-zero value when:
+
+Preset settings submenu is exited in the camera UI (whether any settings were changed or not)
+
+A new preset is created
+
+A preset is deleted
+
+Preset ordering is changed within a preset group
+
+A preset is reset to factory defaults
+
+Remaining Live Bursts (99)
+https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 32-bit unsigned big-endian.
+
+The number of Live Bursts can be captured with current settings before sdcard is full
+
+Live Bursts (100)
+https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 32-bit unsigned big-endian.
+
+Total number of Live Bursts on sdcard
+
+Capture Delay Active (101)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is Capture Delay currently active (i.e. counting down)?
+
+Media Mod State (102)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   Microphone removed
+2   Microphone only
+3   Microphone with external microphone
+Time Warp Speed (103)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   15x
+1   30x
+2   60x
+3   150x
+4   300x
+5   900x
+6   1800x
+7   2x
+8   5x
+9   10x
+10  Auto
+11  1x (realtime)
+12  1/2x (slow-motion)
+Linux Core (104)
+https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is the system’s Linux core active?
+
+Lens Type (105)
+https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   Default
+1   Max Lens
+2   Max Lens 2.0
+3   Max Lens 2.5
+4   Macro Lens
+5   Anamorphic Lens
+6   Neutral Density 4
+7   Neutral Density 8
+8   Neutral Density 16
+9   Neutral Density 32
+Camera lens type (reflects changes to lens settings such as 162, 189, 194, …)
+
+Hindsight (106)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is Video Hindsight Capture Active?
+
+Scheduled Capture Preset ID (107)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+This is a integer value formatted as 32-bit unsigned big-endian.
+
+Scheduled Capture (108)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is Scheduled Capture set?
+
+Display Mod Status (110)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   000 = Display Mod: 0, HDMI: 0, Display Mod Connected: False
+1   001 = Display Mod: 0, HDMI: 0, Display Mod Connected: True
+2   010 = Display Mod: 0, HDMI: 1, Display Mod Connected: False
+3   011 = Display Mod: 0, HDMI: 1, Display Mod Connected: True
+4   100 = Display Mod: 1, HDMI: 0, Display Mod Connected: False
+5   101 = Display Mod: 1, HDMI: 0, Display Mod Connected: True
+6   110 = Display Mod: 1, HDMI: 1, Display Mod Connected: False
+7   111 = Display Mod: 1, HDMI: 1, Display Mod Connected: True
+Note that this is a bitmasked value.
+
+SD Card Write Speed Error (111)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859
+ID  Option Name
+0   False
+1   True
+Is there an SD Card minimum write speed error?
+
+SD Card Errors (112)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859
+This is a integer value formatted as 8-bit unsigned big-endian.
+
+Number of sdcard write speed errors since device booted
+
+Turbo Transfer (113)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859 https://img.shields.io/badge/HERO9Black-a93b85
+ID  Option Name
+0   False
+1   True
+Is Turbo Transfer active?
+
+Camera Control ID (114)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859
+ID  Option Name
+0   Camera Idle: No one is attempting to change camera settings
+1   Camera Control: Camera is in a menu or changing settings. To intervene, app must request control
+2   Camera External Control: An outside entity (app) has control and is in a menu or modifying settings
+Camera control status ID
+
+USB Connected (115)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859
+ID  Option Name
+0   False
+1   True
+Is the camera connected to a PC via USB?
+
+USB Controlled (116)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5 https://img.shields.io/badge/HERO10Black-9bb859
+ID  Option Name
+0   Disabled
+1   Enabled
+Camera control over USB state
+
+SD Card Capacity (117)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7 https://img.shields.io/badge/HERO11BlackMini-e0952a https://img.shields.io/badge/HERO11Black-7a4ea5
+This is a integer value formatted as 32-bit unsigned big-endian.
+
+Total SD card capacity in Kilobytes
+
+Photo Interval Capture Count (118)
+https://img.shields.io/badge/HERO13Black-4cbee0 https://img.shields.io/badge/HERO12Black-566bb7
+This is a integer value formatted as unspecified.

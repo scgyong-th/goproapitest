@@ -26,11 +26,15 @@ class Parser:
     def next_string(self) -> str:
         o = self.offset
         s = self.next_bytes().decode("utf-8")
-        print(f'offset={o} str={s}')
+        # print(f'offset={o} str={s}')
         return s
 
     def next_tlv(self):
         t = self.next_byte()
+        v = self.next_bytes_or_int()
+        return t, v
+
+    def next_bytes_or_int(self):
         v = self.next_bytes()
         l = len(v)
         if l == 1:
@@ -38,8 +42,10 @@ class Parser:
         elif l == 2 or l == 4 or l == 8:
             v = int.from_bytes(v, 'big')
         else:
-            assert False, 'Unknown size TLV value. Should be pre-processed, not here.'
-        return t, v
+            # assert False, 'Unknown size TLV value. Should be pre-processed, not here.'
+            print(f'Unknown size. {len(v)=} {v=}')
+            # v = bytes
+        return v
 
     def parse(self):
         assert false, 'Not Implmemented'
@@ -86,17 +92,29 @@ class QueryParser(Parser):
         return self.parseCommonResponse()
 
     def next_tlv(self):
-        t = self.data[self.offset]
-        print(f'next_tlv(), {self.responseId=}/{t=}')
+        t = self.next_byte()
+        v = None
         if self.responseId == camera.QueryId.GET_SETTING_VALUES:
             if t == camera.SettingId.NIGHTLAPSE_RATE:
-                t = self.next_byte()
                 l = self.next_byte()
                 assert l == 4
                 v = self.next_u32()
-                return t, v
+        if self.responseId == camera.QueryId.GET_STATUS_VALUES:
+            if t == camera.StatusId.AP_WIFI_NAME:
+                v = self.next_string()
+            elif t == camera.StatusId.CLIENT_WIFI_NAME:
+                v = self.next_string()
 
-        return super().next_tlv()
+        if v == None:
+            v = self.next_bytes_or_int()
+
+        print(f'next_tlv(), r={self.responseId}/{t=} {v=}')
+        if self.responseId == camera.QueryId.GET_STATUS_VALUES:
+            if t in camera.StatusId.possible_values:
+                print(f' possible_values: {camera.StatusId.possible_values[t]}')
+                assert v in camera.StatusId.possible_values[t]
+
+        return t, v
 
 register(QueryParser)
 
