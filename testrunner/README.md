@@ -9,7 +9,17 @@
   - ✅ Windows
     - `https://docs.qameta.io/allure/` 에서 ZIP 다운로드
     - bin 경로를 PATH에 추가
+- `pytest-html`
+  - Allure 는 다음 과정을 거쳐야 해서 개발 중에 간단히 테스트하기에는 부적합.
+    - pytest 를 실행하며 result 를 생성
+    - result 를 report 로 변환 (`generate`)
+    - `allure open` 을 통해 Web Server 동작시키고 Browser 로 보기
+  - 다음 명령어 실행
+    - `PYTHONPATH=. pytest --html=results/report.html`
+  - 결과는 다음을 브라우저에서 열면 됨 (macOS 기준)
+    - `open results/report.html`
 
+  - 
 ## Running `pytest`
 - `pytest` 실행
 
