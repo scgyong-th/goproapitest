@@ -31,6 +31,7 @@ def test_setting_{name}(cfg):
     assert SettingId.{const} in msg["tlv"]
 
     value = msg["tlv"][SettingId.{const}][0]
+    #assert len(msg['tlv'][SettingId.{const}]) == 1
     print("Setting {const} =", value)
 
     # TODO: Add valid value checks specific to {const}
@@ -49,6 +50,7 @@ def test_status_{name}(cfg):
     assert StatusId.{const} in msg["tlv"]
 
     value = msg["tlv"][StatusId.{const}][0]
+    #assert len(msg['tlv'][StatusId.{const}]) == 1
     print("Status {const} =", value)
 
     # TODO: Add valid value checks specific to {const}
@@ -72,9 +74,8 @@ file_created = 0
 # 5. 파일 생성
 for name, const in settings.items():
     if const in cases.settings.excludes:
-        print(f'excluded: {name}({const})')
+        print(f'excluded: SettingId.{const}')
         continue
-    print(f'processing: {name}({const})')
     fn = os.path.join(settings_dir, f"test_setting_{name}.py")
     with open(fn, "w", encoding="utf-8") as f:
         f.write(setting_template.format(name=name, const=const))
@@ -82,7 +83,7 @@ for name, const in settings.items():
 
 for name, const in statuses.items():
     if const in cases.statuses.excludes:
-        print(f'excluded: {name}({const})')
+        print(f'excluded: StatusId.{const}')
         continue
     fn = os.path.join(statuses_dir, f"test_status_{name}.py")
     with open(fn, "w", encoding="utf-8") as f:
