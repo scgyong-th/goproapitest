@@ -30,6 +30,7 @@ def proceed_agw_test(req, cfg):
 
     # 6. 파서 호출
     parser = parsers.get(resp_id2, data)
+    print(f"parser={parser}")
     req.parser = parser
 
     # 7. 파싱

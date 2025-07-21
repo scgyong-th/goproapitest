@@ -40,13 +40,29 @@ class Parser:
         self.status = self.data[1]
         self.offset = 2  # 첫 2바이트는 responseId, status
 
+    def parseTlvArray(self):
+        self.tlvArray = dict()
+        while self.offset + 2 <= len(self.data):
+            t, v = self.next_tlv()
+            self.tlvArray[t] = v
+
+    def parseCommonResponse(self):
+        self.parseHeader()
+        self.parseTlvArray()
+        self.result = {
+            "responseId": self.responseId,
+            "status": self.status,
+            "tlv": self.tlvArray,
+        }
+        return self.result
+
 class CommandParser(Parser):
     id2 = camera.ID2.CHAR_Command_Response
     first_byte = 0x00 # wild card
 
     def parse(self):
         print(f'CommandParser.parse(len={len(self.data)}) id=0x{self.data[0]:02x}')
-        self.parseHeader()
+        return self.parseCommonResponse()
 
 register(CommandParser)
 
@@ -56,7 +72,7 @@ class QueryParser(Parser):
 
     def parse(self):
         print(f'QueryParser.parse(len={len(self.data)}) id=0x{self.data[0]:02x}')
-        self.parseHeader()
+        return self.parseCommonResponse()
 
 register(QueryParser)
 

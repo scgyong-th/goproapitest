@@ -3,12 +3,18 @@ import camera
 
 from types import SimpleNamespace
 
-def test_message(cfg):
-    # 1. 요청 객체 생성
+def test_command_get_date_time(cfg):
+    # 요청 객체 생성
     req = camera.GetDateTime(None)
     msg = camera.proceed_agw_test(req, cfg)
 
-    # 7. 날짜/시각 확인
+    # Response ID 확인
+    assert msg['responseId'] == camera.CommandId.GET_DATE_TIME
+
+    # Status 확인
+    assert msg['status'] == 0
+
+    # 날짜/시각 확인
     dt = SimpleNamespace(**msg)
     assert 2000 <= dt.year <= 3000, f'Invalid year: {dt.year}'
     assert 1 <= dt.month <= 12, f'Invalid month: {dt.month}'
