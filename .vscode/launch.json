@@ -1,0 +1,47 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Main Test",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "--html=results/report.html"
+      ],
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/testrunner"
+      },
+      "cwd": "${workspaceFolder}/testrunner",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Run BLE/Query/Status Tests",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "--html=results/report.html tests/ble/query/status"
+      ],
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/testrunner"
+      },
+      "cwd": "${workspaceFolder}/testrunner",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Run Pytest w/ Allure Report",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "--alluredir=results/allure_result"
+      ],
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/testrunner"
+      },
+      "cwd": "${workspaceFolder}/estrunner",
+      "console": "integratedTerminal"
+    }
+  ]
+}
