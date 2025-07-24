@@ -12,8 +12,12 @@ import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
+import android.os.Build
 import android.os.ParcelUuid
+import android.util.Log
 import androidx.annotation.RequiresPermission
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -73,6 +77,10 @@ class BleScannerVM(app: Application) : AndroidViewModel(app) {
                     if (list.any { it.address == device.address }) list else list + device
                 }
             }
+        }
+
+        override fun onScanFailed(errorCode: Int) {
+            Log.e("BLE", "Scan failed with code $errorCode")
         }
     }
 

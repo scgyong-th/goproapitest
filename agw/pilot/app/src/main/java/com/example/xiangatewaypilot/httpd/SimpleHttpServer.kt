@@ -18,18 +18,20 @@ class SimpleHttpServer(private val context: Context, port: Int, val vm: MainMode
         Log.d("Nano", "Request: uri=$uri, method=$method")
 
         return when {
-            uri == "/hello" && method == Method.GET -> {
-                newFixedLengthResponse("Hello from NanoHTTPD!\n")
-            }
-
             uri.startsWith("/app/connect") && method == Method.GET -> {
-//                val intent = Intent("com.thinkware.xian.msg.web").apply {
-//                    putExtra("path", uri.substring(5))
-//                }
-//                context.sendBroadcast(intent)
-                Log.d(TAG, "Trying to connect")
+                if (vm.isConnected) {
+                    return newFixedLengthResponse("""{"connected":true}""")
+                }
                 vm.connect()
-                newFixedLengthResponse("Connecting to BLE Device\n")
+                newFixedLengthResponse("""
+                    {
+                        "connected": false,
+                        "trying": true
+                    }
+                """.trimIndent())
+            }
+            uri == "/app/get_hardware_info" && method == Method.GET -> {
+                newFixedLengthResponse(vm.deviceJson)
             }
             uri == "/app/wifi/connect" && method == Method.GET -> {
                 vm.connectToWifi()

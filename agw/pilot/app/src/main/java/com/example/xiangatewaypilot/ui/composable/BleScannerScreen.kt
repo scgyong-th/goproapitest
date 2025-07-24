@@ -1,5 +1,7 @@
 package com.example.xiangatewaypilot.ui.composable
 
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +22,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.xiangatewaypilot.model.scan.ScannedDeviceEntry
 import com.example.xiangatewaypilot.model.scan.BleScannerVM
 
@@ -31,6 +35,22 @@ fun BleScannerScreen(viewModel: BleScannerVM, onResult: (ScannedDeviceEntry?)->U
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val permissions = arrayOf(
+                android.Manifest.permission.BLUETOOTH_SCAN,
+                android.Manifest.permission.BLUETOOTH_CONNECT
+            )
+
+            if (!permissions.all {
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        it
+                    ) == PackageManager.PERMISSION_GRANTED
+                }) {
+                return@LaunchedEffect
+            }
+        }
+
         viewModel.startScan()
         //isScanning = true
     }

@@ -16,6 +16,7 @@ import android.os.Looper
 import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.AndroidViewModel
 import com.example.xiangatewaypilot.constants.GoProUuids
 import com.example.xiangatewaypilot.data.NotifyReassembler
@@ -48,6 +49,8 @@ class MainModel(app: Application): AndroidViewModel(app) {
     var gatt: BluetoothGatt? = null
 
     val properties = mutableStateMapOf<String, String>()
+    val isConnected: Boolean get() = properties["connected"] == "true"
+    val deviceJson: String get() = properties["deviceJson"] ?: """{"error":"not connected"}"""
 
     val notifyReassembler: NotifyReassembler = NotifyReassembler()
 
@@ -75,6 +78,8 @@ class MainModel(app: Application): AndroidViewModel(app) {
             Log.w("BleModel", "No selected device")
             return
         }
+        val context = getApplication<Application>().applicationContext
+        selectedDevice.value?.save(context)
         val macAddress = _selectedDevice.value?.address ?: ""
         val dev = bluetoothAdapter!!.getRemoteDevice(macAddress)
         val app = getApplication<Application>()
@@ -98,6 +103,7 @@ class MainModel(app: Application): AndroidViewModel(app) {
                 BluetoothProfile.STATE_DISCONNECTED -> {
                     Log.d("BLE", """Setting "connected" to false""")
                     properties["connected"] = "false"
+                    properties.remove("deviceJson")
                     Log.w("BLE", "Disconnected from ${gatt?.device?.address}")
                 }
             }
