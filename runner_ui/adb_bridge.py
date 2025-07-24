@@ -6,6 +6,9 @@ class AdbBridge:
 
     def __init__(self):
         self.device = None
+        self.connect()
+
+    def connect(self):
         result = self.run_sync(['devices'])
         if result.stderr:
             print(f'Error: {result.stderr}')
@@ -29,6 +32,13 @@ class AdbBridge:
             'forward', 'tcp:6502', 'tcp:6502'
         ])
         print(f'Forward result: {result}')
+
+    def run_gateway(self):
+        self.run_sync([
+            '-s', self.device,
+            'shell', 'monkey', '-p', 'com.example.xiangatewaypilot',
+            '-c', 'android.intent.category.LAUNCHER', '1'
+        ])
 
     def run_sync(self, args):
         try:

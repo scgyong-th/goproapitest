@@ -4,54 +4,41 @@
   <meta charset="UTF-8">
   <title>ADB 설정</title>
   <link href="lib/bootstrap.min.css" rel="stylesheet">
+  <link href="main.css" rel="stylesheet">
   <script src="lib/jquery-3.7.1.min.js" ></script>
   <script>
 let bridge = null
 //$(document).ready(async function () {
-async function connect() {
-    bridge = window.pywebview.api
-    document.querySelector('#hello').innerHTML = 'ywywyw'
-    const device_id = await bridge.get_device_id()
-    bridge.log('hello', device_id)
-    $('#output').val('xx')
+async function connect_agw() {
+    $('#adb_device').val('Trying to connect...')
+    const device_id = await bridge.connect_agw()
     $('#adb_device').val(device_id)
-
-    //$('#output').val('Now=' + new Date())
+}
+async function connect_ble() {
+    resp = await bridge.connect_ble()
+    $('#camera_device').val(JSON.stringify(resp, null, 2))
 }
 window.addEventListener('pywebviewready', () => {
+    bridge = window.pywebview.api
     console.log("pywebview ready");
-    connect();
+    connect_agw();
 });
 
   </script>
 </head>
 <body>
-  <h2>ADB</h2>
-  <div class="mb-3">
-    <div id="hello">world</div>
-    <label for="adb_device" class="form-label">ADB Device ID</label>
-    <input type="text" id="adb_device" class="form-control" readonly value="" />
+  <h2>Android Gateway</h2>
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <label for="adb_device" class="form-label mb-0">Android:</label>
+        <input type="text" id="adb_device" class="form-control" placeholder="Device Not Found" readonly>
+        <button class="btn btn-primary" onclick="connect_agw()">Connect</button>
+    </div>
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <label for="camera_device" class="form-label mb-0">Camera:</label>
+        <textarea id="camera_device" class="form-control" readonly></textarea>
+        <button class="btn btn-primary" onclick="connect_ble()">Connect</button>
     </div>
 
-    <button class="btn btn-primary" onclick="connect()">Hello</button>
   <textarea class="form-control" id="output" readonly></textarea>
-
-  <script>
-    function runAdb() {
-      const argsText = document.getElementById("adbArgs").value;
-      const args = argsText.trim().split(/\s+/);
-      const output = document.getElementById("output");
-      output.value = "실행 중...\n";
-
-      window.pywebview.api.run_adb(args).then(result => {
-        output.value =
-          "[stdout]\n" + result.stdout + "\n" +
-          "[stderr]\n" + result.stderr + "\n" +
-          "[exit code] " + result.returncode;
-      }).catch(err => {
-        output.value = "오류 발생: " + err;
-      });
-    }
-  </script>
 </body>
 </html>
