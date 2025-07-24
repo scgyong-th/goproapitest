@@ -13,8 +13,15 @@ async function connect_agw() {
     $('#adb_device').val('Trying to connect...')
     const device_id = await bridge.connect_agw()
     $('#adb_device').val(device_id)
+
+    if (device_id) {
+        await connect_ble()
+    }
 }
 async function connect_ble() {
+    info = await bridge.get_app_info()
+    $('#agw_app').val(JSON.stringify(info, null, 2))
+
     resp = await bridge.connect_ble()
     $('#camera_device').val(JSON.stringify(resp, null, 2))
 }
@@ -32,6 +39,10 @@ window.addEventListener('pywebviewready', () => {
         <label for="adb_device" class="form-label mb-0">Android:</label>
         <input type="text" id="adb_device" class="form-control" placeholder="Device Not Found" readonly>
         <button class="btn btn-primary" onclick="connect_agw()">Connect</button>
+    </div>
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <label for="agw_app" class="form-label mb-0">App:</label>
+        <textarea id="agw_app" class="form-control" readonly></textarea>
     </div>
     <div class="d-flex align-items-center gap-2 mb-3">
         <label for="camera_device" class="form-label mb-0">Camera:</label>

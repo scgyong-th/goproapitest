@@ -16,5 +16,5 @@ webApi.adb = AdbBridge()
 html_path = os.path.abspath('res/main.html')
 print(html_path)
 
-webview.create_window("ADB 설정", url=f'file://{html_path}', js_api=webApi, width=500, height=300)
+webview.create_window("ADB 설정", url=f'file://{html_path}', js_api=webApi, width=800, height=700)
 webview.start()

@@ -39,6 +39,7 @@ class AdbBridge:
             'shell', 'monkey', '-p', 'com.example.xiangatewaypilot',
             '-c', 'android.intent.category.LAUNCHER', '1'
         ])
+        pass
 
     def run_sync(self, args):
         try:

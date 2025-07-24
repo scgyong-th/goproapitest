@@ -1,3 +1,15 @@
 body {
     padding: 1em;
 }
+
+#agw_app {
+    height: 10em;
+    font-family: monospace;
+    resize: vertical;
+}
+
+#camera_device {
+    height: 15em;
+    font-family: monospace;
+    resize: vertical;
+}

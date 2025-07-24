@@ -1,15 +1,38 @@
 package com.example.xiangatewaypilot.httpd
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import com.example.xiangatewaypilot.data.requests.ForwardRequest
 import com.example.xiangatewaypilot.model.main.MainModel
 import fi.iki.elonen.NanoHTTPD
+import kotlinx.serialization.json.Json
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 class SimpleHttpServer(private val context: Context, port: Int, val vm: MainModel) : NanoHTTPD(port) {
     private val TAG = this::class.java.simpleName
+
+    private val infoJson: String get(){
+        val pkgInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+            pkgInfo.longVersionCode
+        else
+            @Suppress("DEPRECATION") pkgInfo.versionCode.toLong()
+
+        val appName = context.applicationInfo.loadLabel(context.packageManager).toString()
+        return Json.encodeToString(
+            mapOf(
+                "appName" to appName,
+                "appVersionName" to pkgInfo.versionName,
+                "appVersionCode" to versionCode.toString(),
+                "osVersion" to Build.VERSION.RELEASE,
+                "osSdkInt" to Build.VERSION.SDK_INT.toString(),
+                "osCodename" to Build.VERSION.CODENAME,
+                "deviceName" to Build.MODEL,
+            )
+        )
+    }
 
     override fun serve(session: IHTTPSession): Response {
         val uri = session.uri
@@ -18,7 +41,10 @@ class SimpleHttpServer(private val context: Context, port: Int, val vm: MainMode
         Log.d("Nano", "Request: uri=$uri, method=$method")
 
         return when {
-            uri.startsWith("/app/connect") && method == Method.GET -> {
+            uri == "/app/info" && method == Method.GET -> {
+                newFixedLengthResponse(infoJson)
+            }
+            uri == "/app/connect" && method == Method.GET -> {
                 if (vm.isConnected) {
                     return newFixedLengthResponse("""{"connected":true}""")
                 }
