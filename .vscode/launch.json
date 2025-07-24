@@ -2,6 +2,20 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Runner Web UI",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/runner_ui/main.py",
+      "args": [
+        "--html=results/report.html"
+      ],
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/runner_ui"
+      },
+      "cwd": "${workspaceFolder}/runner_ui",
+      "console": "integratedTerminal"
+    },
+    {
       "name": "Run Main Test",
       "type": "python",
       "request": "launch",

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>ADB 설정</title>
+  <link href="lib/bootstrap.min.css" rel="stylesheet">
+  <script src="lib/jquery-3.7.1.min.js" ></script>
+  <script>
+let bridge = null
+//$(document).ready(async function () {
+async function connect() {
+    bridge = window.pywebview.api
+    document.querySelector('#hello').innerHTML = 'ywywyw'
+    const device_id = await bridge.get_device_id()
+    bridge.log('hello', device_id)
+    $('#output').val('xx')
+    $('#adb_device').val(device_id)
+
+    //$('#output').val('Now=' + new Date())
+}
+window.addEventListener('pywebviewready', () => {
+    console.log("pywebview ready");
+    connect();
+});
+
+  </script>
+</head>
+<body>
+  <h2>ADB</h2>
+  <div class="mb-3">
+    <div id="hello">world</div>
+    <label for="adb_device" class="form-label">ADB Device ID</label>
+    <input type="text" id="adb_device" class="form-control" readonly value="" />
+    </div>
+
+    <button class="btn btn-primary" onclick="connect()">Hello</button>
+  <textarea class="form-control" id="output" readonly></textarea>
+
+  <script>
+    function runAdb() {
+      const argsText = document.getElementById("adbArgs").value;
+      const args = argsText.trim().split(/\s+/);
+      const output = document.getElementById("output");
+      output.value = "실행 중...\n";
+
+      window.pywebview.api.run_adb(args).then(result => {
+        output.value =
+          "[stdout]\n" + result.stdout + "\n" +
+          "[stderr]\n" + result.stderr + "\n" +
+          "[exit code] " + result.returncode;
+      }).catch(err => {
+        output.value = "오류 발생: " + err;
+      });
+    }
+  </script>
+</body>
+</html>
