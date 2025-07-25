@@ -22,6 +22,13 @@ class CommandRequest(commandId: Byte, onResponse: ((BleRequest, NotifiedResponse
     onNotifiedResponse = onResponse
 )
 
+class KeepAliveRequest(onResponse: ((BleRequest, NotifiedResponse) -> Unit)? = null) : BleRequest.Write(
+    characteristic = CharCache[ID2.CHAR_Settings]!!,
+    //value = byteArrayOf(0x01, CommandId.KEEP_ALIVE),
+    value = byteArrayOf(0x03, CommandId.KEEP_ALIVE, 0x01, 0x42),
+    onNotifiedResponse = onResponse
+)
+
 class GetWifiApSsid(onResponse: (BleRequest, String)->Unit) : BleRequest.Read(
     characteristic = CharCache[ID2.CHAR_WiFi_AP_SSID]!!,
     onResponse = { req, resp -> onResponse(req, String(resp ?: ByteArray(0), Charsets.UTF_8)) }

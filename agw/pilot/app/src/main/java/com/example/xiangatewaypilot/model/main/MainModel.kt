@@ -26,6 +26,7 @@ import com.example.xiangatewaypilot.data.requests.CommandRequest
 import com.example.xiangatewaypilot.data.requests.GetHardwareInfo
 import com.example.xiangatewaypilot.data.requests.GetWifiApPassword
 import com.example.xiangatewaypilot.data.requests.GetWifiApSsid
+import com.example.xiangatewaypilot.data.requests.KeepAliveRequest
 import com.example.xiangatewaypilot.data.requests.QueryId
 import com.example.xiangatewaypilot.data.requests.QueryRequest
 import com.example.xiangatewaypilot.data.requests.SetApControl
@@ -299,7 +300,7 @@ class MainModel(app: Application): AndroidViewModel(app) {
         val reservedOn = keepAliveReservedOn
         handler.postDelayed({
             if (reservedOn == keepAliveReservedOn) {
-                enqueueRequest(CommandRequest(CommandId.KEEP_ALIVE) { req, resp ->
+                enqueueRequest(KeepAliveRequest { _, _ ->
                     val now = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
                     properties["keep_alive"] = "BLE $now"
                 })
