@@ -16,5 +16,8 @@ webApi.adb = AdbBridge()
 html_path = os.path.abspath('res/main.html')
 print(html_path)
 
-webview.create_window("ADB 설정", url=f'file://{html_path}', js_api=webApi, width=800, height=700)
+window = webview.create_window(
+    "Android Gateway", url=f'file://{html_path}', js_api=webApi, 
+    width=1280, height=800)
+webApi.window = window
 webview.start()
