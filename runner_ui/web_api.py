@@ -1,6 +1,13 @@
 import requests
+import subprocess
+import threading
+import webbrowser
+import os
 
 class WebApi:
+    pytest_path = '/Users/scgyong/myenv/bin/pytest'
+    def __init__(self):
+        self.window = None
     def log(self, *logs):
         print(f'Web: {logs}')
     def get_device_id(self):
@@ -18,6 +25,7 @@ class WebApi:
         print('in get_app_info()')
         try:
             resp = requests.get('http://localhost:6502/app/info')
+            self.app = resp.json()
         except:
             return """{"error":"app not ready"}"""
         print(f'Response of app/info: {resp.json()}')
@@ -28,23 +36,36 @@ class WebApi:
         resp = requests.get('http://localhost:6502/app/connect')
         print(f'Response from SimeHttpServer: {resp.text}')
         resp = requests.get('http://localhost:6502/app/get_hardware_info')
+        self.cam = resp.json()
         print(f'Response of get_hardware_info: {resp.json()}')
         return resp.json()
-    # def run_adb(self, args):
-    #     try:
-    #         completed = subprocess.run(
-    #             [self.adb_path] + args,
-    #             capture_output=True,
-    #             text=True
-    #         )
-    #         return {
-    #             "stdout": completed.stdout,
-    #             "stderr": completed.stderr,
-    #             "returncode": completed.returncode
-    #         }
-    #     except Exception as e:
-    #         return {
-    #             "stdout": "",
-    #             "stderr": str(e),
-    #             "returncode": -1
-    #         }
+    
+    def run_pytest(self):
+        def target():
+            cmd = [
+                self.pytest_path, '-v', '--html=results/report.html',
+                '--metadata', 'Cam Info', str(self.cam),
+                '--metadata', 'App Info', str(self.app),
+            ]
+            print(f'Command Line: {cmd}')
+            process = subprocess.Popen(
+                cmd,
+                cwd='../testrunner/',
+                env={'PYTHONPATH':'.'},
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1
+            )
+            for line in process.stdout:
+                if self.window:
+                    self.window.evaluate_js(f"appendLog({repr(line.strip())})")
+            process.stdout.close()
+            process.wait()
+            if self.window:
+                self.window.evaluate_js(f"appendLog('[exit code] {process.returncode}')")
+        threading.Thread(target=target, daemon=True).start()
+   
+    def show_report(self):
+        html_path = os.path.abspath("../testrunner/results/report.html")  # 절대경로로 변환
+        webbrowser.open(f"file://{html_path}")
