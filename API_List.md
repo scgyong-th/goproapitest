@@ -1,5 +1,48 @@
 # GoPro API List
 
+## Summary
+
+### BLE
+* 7/25 까지 구현 완료된 항목
+  * BLE Handshake 및 초기 메시지
+  * Read
+    * `WiFi SSID`
+    * `WiFi Password`
+  * Commands
+    * `GetHardwareInfo`
+    * `GetDateTime`
+    * `SetApControl`
+  * Settings
+    * `Keep Alive`
+  * Query
+    * `Get Status Values` - 자동 생성
+    * `Get Setting Values` - 자동 생성
+* 8/1 까지 완료할 항목
+  * BLE Setup
+    * Finish Paring
+    * Set Paring State
+  * Control
+    * Set Date Time, Set Local Date Time 등 비교적 간단한 Setter
+  * Query
+    * 비교적 간단한 Getter
+    * `Get Setting Capability`
+  * Set Setting
+    * 40여개 SettingId 에 대하여 자동 Setter 자동 생성 Script 작성
+* 이번 구현에 어려운 항목들
+  * 자동화하기 어려운 테스트
+    * Reboot, Sleep 등
+  * 시간이 필요하거나 사용자가 개입되어야 하는 테스트
+    * 변화 감지 Register/Unregister
+  * 시간관계상 어려운 테스트
+    * COHN (AP 에 접속하는 기능) 관련
+    * Live Streaming 관련
+    * Hilight 관련 (녹화중에만 가능)
+    * Preset 관련
+
+### HTTP
+* 간단한 Getter 들에 대하여 Request/Response 중계하는 기능만 구현
+  * Status Getter test case 만 추가
+
 ## GoPro BLE API
 * 출처
   * https://gopro.github.io/OpenGoPro/ble/protocol.html
