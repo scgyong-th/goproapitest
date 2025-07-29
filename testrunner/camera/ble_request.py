@@ -100,6 +100,19 @@ class GetLocalDateTime(CommandRequest):
     def __init__(self):
         super().__init__(CommandId.GET_LOCAL_DATE_TIME)
 
+class SetApControl(CommandRequest):
+    def __init__(self, enables: bool):
+        super().__init__(CommandId.SET_AP_CONTROL, bytes([
+            0x01 if enables else 0x00,
+        ]))
+
+class SetShutter(CommandRequest):
+    def __init__(self, enables: bool):
+        super().__init__(CommandId.SET_SHUTTER, bytes([
+            0x01 if enables else 0x00,
+        ]))
+
+
 class GetWifiApSsid(BleReadRequest):
     def __init__(self, on_return):
         def decode_utf8(byte_data):
@@ -119,14 +132,6 @@ class GetWifiApPassword(BleReadRequest):
             on_return=decode_utf8
         )
 
-
-class SetApControl(BleWriteRequest):
-    def __init__(self, enables: bool, on_return):
-        super().__init__(
-            characteristic=ID2.CHAR_Command,
-            value=bytes([0x03, CommandId.SET_AP_CONTROL, 0x01, 0x01 if enables else 0x00]),
-            on_return=on_return
-        )
 
 
 class QueryRequest(BleWriteRequest):
