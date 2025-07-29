@@ -15,6 +15,10 @@ class Parser:
         length = self.data[self.offset]
         self.offset += 1
         return length
+    def next_i16(self):
+        val = int.from_bytes(self.data[self.offset:self.offset+2], 'big', signed=True)
+        self.offset += 2
+        return val
     def next_u16(self):
         val = int.from_bytes(self.data[self.offset:self.offset+2], 'big')
         self.offset += 2
@@ -149,6 +153,17 @@ class GetDateTimeParser(CommandParser):
         )
 
 register(GetDateTimeParser)
+
+class GetLocalDateTimeParser(GetDateTimeParser):
+    first_byte = camera.CommandId.GET_LOCAL_DATE_TIME
+    def parse(self):
+        super().parse()
+        self.offset -= 1 # no weekday in local_date_time
+        self.result["offset"] = self.next_i16()
+        self.result["is_dst"] = self.next_byte()
+        return self.result
+
+register(GetLocalDateTimeParser)
 
 class GetHardwareInfoParser(CommandParser):
     id2 = camera.ID2.CHAR_Command_Response

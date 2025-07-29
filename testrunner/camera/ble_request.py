@@ -88,7 +88,7 @@ class SetLocalDateTime(CommandRequest):
         super().__init__(CommandId.SET_LOCAL_DATE_TIME, bytes([
             *Int16ub.build(dtobj.year), dtobj.month, dtobj.day, 
             dtobj.hour, dtobj.minute, dtobj.second, 
-            dtobj.offset, # UTC offset in minutes
+            *Int16ub.build(dtobj.offset), # UTC offset in minutes
             1 if dtobj.is_dst else 0 # dst
         ]))
 
