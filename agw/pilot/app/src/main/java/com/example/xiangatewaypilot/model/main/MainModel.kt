@@ -27,6 +27,7 @@ import com.example.xiangatewaypilot.data.requests.GetHardwareInfo
 import com.example.xiangatewaypilot.data.requests.GetWifiApPassword
 import com.example.xiangatewaypilot.data.requests.GetWifiApSsid
 import com.example.xiangatewaypilot.data.requests.KeepAliveRequest
+import com.example.xiangatewaypilot.data.requests.PairingFinishRequest
 import com.example.xiangatewaypilot.data.requests.QueryId
 import com.example.xiangatewaypilot.data.requests.QueryRequest
 import com.example.xiangatewaypilot.data.requests.SetApControl
@@ -199,6 +200,9 @@ class MainModel(app: Application): AndroidViewModel(app) {
 
     private fun startHandshake() {
         Log.d("BLE", "startHandshake()")
+        enqueueRequest(PairingFinishRequest { req, resp ->
+            Log.d("BLE", "Network: ${resp.toJson()} isSuccessful=${resp.isSuccessful}")
+        })
         enqueueRequest(GetHardwareInfo() { req, resp ->
             Log.d("BLE", "resp: ${resp.toJson()}")
             properties["deviceJson"] = resp.toJson()
@@ -307,7 +311,7 @@ class MainModel(app: Application): AndroidViewModel(app) {
             } else {
                 Log.v("BLE", "ignoring Alive mismatch: reservedOn=$reservedOn now reserved=$keepAliveReservedOn")
             }
-        }, 3000)
+        }, 5000)
     }
     private val requestQueue: ArrayDeque<BleRequest> = ArrayDeque()
     private var _isProcessing = false
@@ -338,6 +342,8 @@ class MainModel(app: Application): AndroidViewModel(app) {
             reserveKeepAlive()
             return
         }
+        keepAliveReservedOn = 0 // cancel keep alive reservation
+
         Log.v("BLE", "popped: $request")
         waitingRequest = request
         //isProcessing = true

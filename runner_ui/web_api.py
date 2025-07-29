@@ -11,34 +11,39 @@ class WebApi:
     def log(self, *logs):
         print(f'Web: {logs}')
     def get_device_id(self):
-        return self.adb.device
+        if not self.adb.device:
+            return ''
+        return f'{self.adb.device} model:{self.adb.model}'
     def connect_agw(self):
         self.adb.connect()
         if self.adb.device:
-            print(f'Device: {self.adb.device}')
+            print(f'Device: {self.adb.device} {self.adb.model}')
             self.adb.run_gateway()
         else:
             print('No device')
 
-        return self.adb.device
+        return self.get_device_id()
     def get_app_info(self):
         print('in get_app_info()')
         try:
             resp = requests.get('http://localhost:6502/app/info')
             self.app = resp.json()
         except:
-            return """{"error":"app not ready"}"""
+            return {"error":"app not ready"}
         print(f'Response of app/info: {resp.json()}')
         return resp.json()
 
     def connect_ble(self):
         print('in connect_ble()')
-        resp = requests.get('http://localhost:6502/app/connect')
-        print(f'Response from SimeHttpServer: {resp.text}')
-        resp = requests.get('http://localhost:6502/app/get_hardware_info')
-        self.cam = resp.json()
-        print(f'Response of get_hardware_info: {resp.json()}')
-        return resp.json()
+        try:
+            resp = requests.get('http://localhost:6502/app/connect')
+            print(f'Response from SimeHttpServer: {resp.text}')
+            resp = requests.get('http://localhost:6502/app/get_hardware_info')
+            self.cam = resp.json()
+            print(f'Response of get_hardware_info: {resp.json()}')
+            return resp.json()
+        except:
+            return {"error":"app not ready"}
     
     def run_pytest(self):
         def target():

@@ -5,6 +5,7 @@ import com.example.xiangatewaypilot.constants.ID2
 import com.example.xiangatewaypilot.data.requests.CommandId
 import com.example.xiangatewaypilot.data.requests.QueryId
 import com.example.xiangatewaypilot.data.responses.GetHardwareInfoResponse
+import com.example.xiangatewaypilot.data.responses.NetworkManagementResponse
 import com.example.xiangatewaypilot.data.responses.NotifiedResponse
 import com.example.xiangatewaypilot.data.responses.QueryResponse
 
@@ -18,7 +19,10 @@ object ResponseFactory {
         ),
         ID2.CHAR_Query_Response to mapOf(
             QueryId.GET_STATUS_VALUES to ::QueryResponse
-        )
+        ),
+        ID2.CHAR_Network_Management_Response to mapOf(
+            0x03.toByte() to ::NetworkManagementResponse,
+        ),
     )
 
     fun parse(charUuid: String, assembled: ByteArray): NotifiedResponse? {

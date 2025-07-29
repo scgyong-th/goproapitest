@@ -1,4 +1,6 @@
 import subprocess
+import re
+
 from types import SimpleNamespace
 
 class AdbBridge:
@@ -9,7 +11,9 @@ class AdbBridge:
         self.connect()
 
     def connect(self):
-        result = self.run_sync(['devices'])
+        self.device = None
+        self.model = ''
+        result = self.run_sync(['devices', '-l'])
         if result.stderr:
             print(f'Error: {result.stderr}')
             return
@@ -25,8 +29,16 @@ class AdbBridge:
                 continue
 
             self.device = device_id
+
+            match = re.search(r'^(\S+)\s+device.*\bmodel:(\S+)', line)
+            if match:
+                self.model = match.group(2)
             break
 
+        if not self.device:
+            print('Device not found')
+            return
+        
         result = self.run_sync([
             '-s', self.device,
             'forward', 'tcp:6502', 'tcp:6502'

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     kotlin("plugin.serialization") version "1.9.10"
+    id("com.google.protobuf")
 }
 
 android {
@@ -38,6 +39,11 @@ android {
     buildFeatures {
         compose = true
     }
+    sourceSets {
+        getByName("main") {
+            java.srcDirs("build/generated/source/proto/main/java")
+        }
+    }
 }
 
 dependencies {
@@ -65,4 +71,21 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.utils)
     implementation(libs.ktor.client.okhttp)
+    implementation(libs.protobuf.javalite)
 }
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.24.4"
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                create("java") {
+                    option("lite") // Android에선 lite 필수
+                }
+            }
+        }
+    }
+}
+

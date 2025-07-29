@@ -2,9 +2,12 @@ package com.example.xiangatewaypilot.data.requests
 
 import com.example.xiangatewaypilot.constants.ID2
 import com.example.xiangatewaypilot.data.responses.GetHardwareInfoResponse
+import com.example.xiangatewaypilot.data.responses.NetworkManagementResponse
 import com.example.xiangatewaypilot.data.responses.NotifiedResponse
 import com.example.xiangatewaypilot.data.responses.QueryResponse
 import com.example.xiangatewaypilot.model.main.CharCache
+import open_gopro.NetworkManagement
+import open_gopro.NetworkManagement.RequestPairingFinish
 
 class GetHardwareInfo(onResponse: (BleRequest, GetHardwareInfoResponse)->Unit) : BleRequest.Write(
     characteristic = CharCache[ID2.CHAR_Command]!!,
@@ -44,6 +47,23 @@ class SetApControl(enables: Boolean, onResponse: (BleRequest, NotifiedResponse)-
     value = byteArrayOf(0x03, CommandId.SET_AP_CONTROL, 0x01, if (enables) 0x01 else 0x00),
     onNotifiedResponse = onResponse
 )
+
+class PairingFinishRequest(onResponse: (BleRequest, NetworkManagementResponse) -> Unit) : BleRequest.Write(
+    characteristic = CharCache[ID2.CHAR_Network_Management_Command]!!,
+    value = byteArrayOf(),
+    onNotifiedResponse = { req, resp -> onResponse(req, resp as NetworkManagementResponse) }
+) {
+    init {
+        val protobuf = RequestPairingFinish.newBuilder()
+            .setResult(NetworkManagement.EnumPairingFinishState.SUCCESS)
+            .setPhoneName("Thinkware AGW")
+            .build()
+            .toByteArray()
+        val featureID = 0x03.toByte()
+        val actionID = 0x01.toByte()
+        value = byteArrayOf((protobuf.size + 2).toByte(), featureID, actionID) + protobuf
+    }
+}
 
 class QueryRequest(queryId: Byte, ids: ByteArray, onResponse: (BleRequest, QueryResponse)->Unit) : BleRequest.Write(
     characteristic = CharCache[ID2.CHAR_Query]!!,
