@@ -4,6 +4,8 @@ except ImportError:
     from constants import CommandId, QueryId, SettingId, StatusId, ID2
 import json
 
+from construct import Int16ub
+   
 class BleRequest:
     def __init__(self, try_count=3):
         self.try_count = try_count
@@ -56,6 +58,18 @@ class GetDateTime(BleWriteRequest):
         super().__init__(
             characteristic=ID2.CHAR_Command,
             value=bytes([0x01, CommandId.GET_DATE_TIME]),
+            on_return=lambda it: on_return(it)
+        )
+
+class SetDateTime(BleWriteRequest):
+    def __init__(self, dtobj, on_return):
+        super().__init__(
+            characteristic=ID2.CHAR_Command,
+            value=bytes([
+                0x09, CommandId.SET_DATE_TIME, 0x07,
+                *Int16ub.build(dtobj.year), dtobj.month, dtobj.day, 
+                dtobj.hour, dtobj.minute, dtobj.second
+            ]),
             on_return=lambda it: on_return(it)
         )
 
