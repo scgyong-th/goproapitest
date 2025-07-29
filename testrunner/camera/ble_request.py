@@ -53,26 +53,6 @@ class BleWriteRequest(BleRequest):
         if self.on_return:
             self.on_return(resp)
 
-class GetDateTime(BleWriteRequest):
-    def __init__(self, on_return):
-        super().__init__(
-            characteristic=ID2.CHAR_Command,
-            value=bytes([0x01, CommandId.GET_DATE_TIME]),
-            on_return=lambda it: on_return(it)
-        )
-
-class SetDateTime(BleWriteRequest):
-    def __init__(self, dtobj, on_return):
-        super().__init__(
-            characteristic=ID2.CHAR_Command,
-            value=bytes([
-                0x09, CommandId.SET_DATE_TIME, 0x07,
-                *Int16ub.build(dtobj.year), dtobj.month, dtobj.day, 
-                dtobj.hour, dtobj.minute, dtobj.second
-            ]),
-            on_return=lambda it: on_return(it)
-        )
-
 class GetHardwareInfo(BleWriteRequest):
     def __init__(self, on_return):
         super().__init__(
@@ -84,13 +64,41 @@ class GetHardwareInfo(BleWriteRequest):
 
 
 class CommandRequest(BleWriteRequest):
-    def __init__(self, command_id: int, on_return=None):
+    def __init__(self, command_id: int, param=None, on_return=None):
+        if param:
+            len_param = len(param)
+            value = bytes([len_param + 2, command_id, len_param]) + param
+        else:
+            value = bytes([0x01, command_id])
         super().__init__(
             characteristic=ID2.CHAR_Command,
-            value=bytes([0x01, command_id]),
+            value=value,
             on_return=on_return
         )
 
+class SetDateTime(CommandRequest):
+    def __init__(self, dtobj):
+        super().__init__(CommandId.SET_DATE_TIME, bytes([
+            *Int16ub.build(dtobj.year), dtobj.month, dtobj.day, 
+            dtobj.hour, dtobj.minute, dtobj.second
+        ]))
+
+class SetLocalDateTime(CommandRequest):
+    def __init__(self, dtobj):
+        super().__init__(CommandId.SET_LOCAL_DATE_TIME, bytes([
+            *Int16ub.build(dtobj.year), dtobj.month, dtobj.day, 
+            dtobj.hour, dtobj.minute, dtobj.second, 
+            dtobj.offset, # UTC offset in minutes
+            1 if dtobj.is_dst else 0 # dst
+        ]))
+
+class GetDateTime(CommandRequest):
+    def __init__(self):
+        super().__init__(CommandId.GET_DATE_TIME)
+
+class GetLocalDateTime(CommandRequest):
+    def __init__(self):
+        super().__init__(CommandId.GET_LOCAL_DATE_TIME)
 
 class GetWifiApSsid(BleReadRequest):
     def __init__(self, on_return):

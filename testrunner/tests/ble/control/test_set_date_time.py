@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from types import SimpleNamespace
 
 def get_date_time(cfg):
-    req = camera.GetDateTime(None)
+    req = camera.GetDateTime()
     msg = camera.proceed_agw_test(req, cfg)
 
     # Response ID 확인
@@ -16,8 +16,6 @@ def get_date_time(cfg):
 
     # 날짜/시각 확인
     return SimpleNamespace(**msg)
-
-
 
 def test_command_set_date_time(cfg):
 
@@ -37,7 +35,7 @@ def test_command_set_date_time(cfg):
     earlier = dtobj - timedelta(seconds=diff_seconds)
     print(f'{diff_seconds} seconds earlier={earlier}')
 
-    req = camera.SetDateTime(earlier, None)
+    req = camera.SetDateTime(earlier)
     msg = camera.proceed_agw_test(req, cfg)
 
     # Response ID 확인
@@ -59,7 +57,7 @@ def test_command_set_date_time(cfg):
     # assert dt2.second == earlier.second
 
     # 원래 값으로 업데이트
-    req = camera.SetDateTime(dt, None)
+    req = camera.SetDateTime(dt)
     msg = camera.proceed_agw_test(req, cfg)
     
     # Response ID 확인
@@ -71,3 +69,4 @@ def test_command_set_date_time(cfg):
     # 업데이트된 시각 요청
     dt3 = get_date_time(cfg)
     print(f'Final Camera Date={dt3} {dt3.__dict__}')
+
