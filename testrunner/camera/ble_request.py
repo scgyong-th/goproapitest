@@ -76,6 +76,16 @@ class CommandRequest(BleWriteRequest):
             on_return=on_return
         )
 
+# kotlin:
+    # characteristic = CharCache[ID2.CHAR_Settings]!!,
+    # value = byteArrayOf(0x03, CommandId.KEEP_ALIVE, 0x01, 0x42),
+class KeepAliveRequest(BleWriteRequest):
+    def __init__(self):
+        super().__init__(
+            characteristic=ID2.CHAR_Settings,
+            value=bytes([0x03, CommandId.KEEP_ALIVE, 0x01, 0x042])
+        )
+
 class SetDateTime(CommandRequest):
     def __init__(self, dtobj):
         super().__init__(CommandId.SET_DATE_TIME, bytes([

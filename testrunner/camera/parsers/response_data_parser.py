@@ -123,6 +123,12 @@ class QueryParser(Parser):
 
 register(QueryParser)
 
+class SettingParser(QueryParser):
+    id2 = camera.ID2.CHAR_Settings_Response
+    first_byte = 0x00 # wild card
+
+register(SettingParser)
+
 from datetime import datetime
 
 class GetDateTimeParser(CommandParser):
