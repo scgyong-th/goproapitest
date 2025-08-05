@@ -172,6 +172,25 @@ class GetLocalDateTimeParser(GetDateTimeParser):
 
 register(GetLocalDateTimeParser)
 
+class GetOpenGoproVersionParser(CommandParser):
+    id2 = camera.ID2.CHAR_Command_Response
+    first_byte = camera.CommandId.GET_OPEN_GOPRO_VERSION
+    def parse(self):
+        self.parseHeader()
+        self.major = self.next_bytes()
+        self.minor = self.next_bytes()
+
+        self.result = {
+            "responseId": self.responseId,
+            "status": self.status,
+            "major": self.major,
+            "minor": self.minor,
+        } 
+
+        return self.result
+
+register(GetOpenGoproVersionParser)
+
 class GetHardwareInfoParser(CommandParser):
     id2 = camera.ID2.CHAR_Command_Response
     first_byte = camera.CommandId.GET_HARDWARE_INFO

@@ -149,6 +149,10 @@ class GetLocalDateTime(CommandRequest):
     def __init__(self):
         super().__init__(CommandId.GET_LOCAL_DATE_TIME)
 
+class GetOpenGoproVersion(CommandRequest):
+    def __init__(self):
+        super().__init__(CommandId.GET_OPEN_GOPRO_VERSION)
+
 class SetApControl(CommandRequest):
     def __init__(self, enables: bool):
         super().__init__(CommandId.SET_AP_CONTROL, bytes([
@@ -215,6 +219,14 @@ class QueryRequest(BleWriteRequest):
             value=payload,
             on_return=on_return
         )
+
+class GetSettingValues(QueryRequest):
+    def __init__(self, ids):
+        super().__init__(QueryId.GET_SETTING_VALUES, ids, None)    
+
+class GetStatusValues(QueryRequest):
+    def __init__(self, ids):
+        super().__init__(QueryId.GET_STATUS_VALUES, ids, None)    
 
 def const_members(clazz):
     for name, value in vars(clazz).items():
