@@ -5,7 +5,7 @@ from types import SimpleNamespace
 
 def test_command_get_date_time(cfg):
     # 요청 객체 생성
-    req = camera.GetDateTime(None)
+    req = camera.GetDateTime()
     msg = camera.proceed_agw_test(req, cfg)
 
     # Response ID 확인

@@ -1,5 +1,6 @@
 from . import register
 import camera
+import proto
 
 class Parser:
     def __init__(self, data):
@@ -194,3 +195,21 @@ class GetHardwareInfoParser(CommandParser):
         return result
 
 register(GetHardwareInfoParser)
+
+class ProtobufResponseParser(QueryParser):
+    first_byte = 0xF5 # wild card
+
+    def parse(self):
+        actionId = self.data[1]
+        if actionId == 0xED:
+            msg = proto.ResponseLastCapturedMedia()
+        else:
+            msg = None
+        
+        if msg:
+            msg.ParseFromString(self.data[2:])
+
+        self.result = msg
+        return msg
+ 
+register(ProtobufResponseParser)

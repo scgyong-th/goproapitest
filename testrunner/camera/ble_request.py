@@ -112,6 +112,15 @@ class SetShutter(CommandRequest):
             0x01 if enables else 0x00,
         ]))
 
+class GetLastCapturedMedia(BleWriteRequest):
+    def __init__(self):
+        featureId = 0xF5
+        actionId = 0x6D
+        super().__init__(
+            characteristic=ID2.CHAR_Query,
+            value=bytes([0x02, featureId, actionId]),
+            on_return=None
+        )
 
 class GetWifiApSsid(BleReadRequest):
     def __init__(self, on_return):
