@@ -203,24 +203,20 @@ class GetHardwareInfoParser(CommandParser):
 register(GetHardwareInfoParser)
 
 class ProtobufResponseParser(Parser):
-    id2 = camera.ID2.CHAR_Command_Response
-    classes = {
-        0xED: proto.ResponseLastCapturedMedia,
-        0xE9: proto.ResponseGeneric,
-    }
+    def __init__(self, data, featureId, actionId, resp_class = proto.ResponseGeneric):
+        super().__init__(data)
+        self.featureId = featureId
+        self.actionId = actionId
+        self.resp_class = resp_class
+
     def parse(self):
+        msg = self.resp_class()
+        featureId = self.data[0]
         actionId = self.data[1]
-        clazz = self.classes[actionId]
-        if clazz:
-            msg = clazz()
-        else:
-            msg = None
-        
-        if msg:
-            msg.ParseFromString(self.data[2:])
+        assert featureId == self.featureId
+        assert actionId == self.actionId
+        msg.ParseFromString(self.data[2:])
 
         self.result = msg
         return msg
  
-register(ProtobufResponseParser, 0xF5) # ResponseLastCapturedMedia
-register(ProtobufResponseParser, 0xF1) # ResponseCameraControlStatus

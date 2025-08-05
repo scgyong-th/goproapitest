@@ -27,7 +27,10 @@ def proceed_agw_test(req, cfg):
     print(f"Assembled bytes: {data.hex()}")
 
     # 6. 파서 호출
-    parser = parsers.get(resp_id2, data)
+    if req.parser:
+        parser = req.parser(data)
+    else:
+        parser = parsers.get(resp_id2, data)
     print(f"parser={parser}")
     req.parser = parser
 

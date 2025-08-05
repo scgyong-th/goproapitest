@@ -1,12 +1,10 @@
-try:
-    from .constants import CommandId, QueryId, SettingId, StatusId, ID2
-except ImportError:
-    from constants import CommandId, QueryId, SettingId, StatusId, ID2
 import json
-
 from construct import Int16ub
-   
+from .constants import CommandId, QueryId, SettingId, StatusId, ID2
+import proto
+
 class BleRequest:
+    parser = None
     def __init__(self, try_count=3):
         self.try_count = try_count
     def toJson(self):
@@ -104,8 +102,24 @@ class ProtobufRequest(BleWriteRequest):
         )
 
 class SetCameraControl(ProtobufRequest):
-    def __init__(self, pbuf):
-        super().__init__(featureId=0xF1, actionId=0x69, pbuf=pbuf)
+    featureId = 0xF1
+    actionId = 0x69
+    resp_actionId = actionId | 0x80
+    def __init__(self, pbuf: proto.RequestSetCameraControlStatus):
+        super().__init__(self.featureId, self.actionId, pbuf)
+    def parser(self, data):
+        from .parsers.response_data_parser import ProtobufResponseParser
+        return ProtobufResponseParser(data, self.featureId, self.resp_actionId)
+
+class SetTurboActive(ProtobufRequest):
+    featureId = 0xF1
+    actionId = 0x6B
+    resp_actionId = actionId | 0x80
+    def __init__(self, pbuf: proto.RequestSetTurboActive):
+        super().__init__(self.featureId, self.actionId, pbuf)
+    def parser(self, data):
+        from .parsers.response_data_parser import ProtobufResponseParser
+        return ProtobufResponseParser(data, self.featureId, self.resp_actionId)
 
 class SetAnalytics(CommandRequest):
     def __init__(self):
@@ -148,14 +162,18 @@ class SetShutter(CommandRequest):
         ]))
 
 class GetLastCapturedMedia(BleWriteRequest):
+    featureId = 0xF5
+    actionId = 0x6D
+    resp_actionId = actionId | 0x80
     def __init__(self):
-        featureId = 0xF5
-        actionId = 0x6D
         super().__init__(
             characteristic=ID2.CHAR_Query,
-            value=bytes([0x02, featureId, actionId]),
+            value=bytes([0x02, self.featureId, self.actionId]),
             on_return=None
         )
+    def parser(self, data):
+        from .parsers.response_data_parser import ProtobufResponseParser
+        return ProtobufResponseParser(data, self.featureId, self.resp_actionId, proto.ResponseLastCapturedMedia)
 
 class GetWifiApSsid(BleReadRequest):
     def __init__(self, on_return):
