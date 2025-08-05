@@ -161,6 +161,10 @@ class SetShutter(CommandRequest):
             0x01 if enables else 0x00,
         ]))
 
+class SleepRequest(CommandRequest):
+    def __init__(self):
+        super().__init__(CommandId.SLEEP)
+
 class GetLastCapturedMedia(BleWriteRequest):
     featureId = 0xF5
     actionId = 0x6D

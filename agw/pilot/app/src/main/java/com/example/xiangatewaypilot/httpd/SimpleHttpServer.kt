@@ -30,6 +30,7 @@ class SimpleHttpServer(private val context: Context, port: Int, val vm: MainMode
                 "osSdkInt" to Build.VERSION.SDK_INT.toString(),
                 "osCodename" to Build.VERSION.CODENAME,
                 "deviceName" to Build.MODEL,
+                "connected" to vm.isConnected.toString(),
             )
         )
     }

@@ -339,7 +339,11 @@ class MainModel(app: Application): AndroidViewModel(app) {
 
         val request = requestQueue.removeFirstOrNull()
         if (request == null) {
-            reserveKeepAlive()
+            if (isConnected) {
+                reserveKeepAlive()
+            } else {
+                Log.w("BLE", "Not reserving KeepAlive since BLE is not connected")
+            }
             return
         }
         keepAliveReservedOn = 0 // cancel keep alive reservation
