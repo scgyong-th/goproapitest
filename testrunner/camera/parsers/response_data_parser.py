@@ -202,13 +202,17 @@ class GetHardwareInfoParser(CommandParser):
 
 register(GetHardwareInfoParser)
 
-class ProtobufResponseParser(QueryParser):
-    first_byte = 0xF5 # wild card
-
+class ProtobufResponseParser(Parser):
+    id2 = camera.ID2.CHAR_Command_Response
+    classes = {
+        0xED: proto.ResponseLastCapturedMedia,
+        0xE9: proto.ResponseGeneric,
+    }
     def parse(self):
         actionId = self.data[1]
-        if actionId == 0xED:
-            msg = proto.ResponseLastCapturedMedia()
+        clazz = self.classes[actionId]
+        if clazz:
+            msg = clazz()
         else:
             msg = None
         
@@ -218,4 +222,5 @@ class ProtobufResponseParser(QueryParser):
         self.result = msg
         return msg
  
-register(ProtobufResponseParser)
+register(ProtobufResponseParser, 0xF5) # ResponseLastCapturedMedia
+register(ProtobufResponseParser, 0xF1) # ResponseCameraControlStatus

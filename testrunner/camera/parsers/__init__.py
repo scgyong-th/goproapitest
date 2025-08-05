@@ -3,8 +3,10 @@ from .packet_assembler import *
 
 _factory = {}
 
-def register(cls):
-    name = f'{cls.id2}{cls.first_byte:02x}'
+def register(cls, first_byte=None):
+    if first_byte == None:
+        first_byte = cls.first_byte
+    name = f'{cls.id2}{first_byte:02x}'
     _factory[name] = cls
 
 def lookup(id2, first_byte):

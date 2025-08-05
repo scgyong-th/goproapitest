@@ -86,6 +86,27 @@ class KeepAliveRequest(BleWriteRequest):
             value=bytes([0x03, CommandId.KEEP_ALIVE, 0x01, 0x042])
         )
 
+class SetAnalytics(CommandRequest):
+    def __init__(self):
+        super().__init__(CommandId.SET_ANALYTICS)
+
+class SetAnalytics(CommandRequest):
+    def __init__(self):
+        super().__init__(CommandId.SET_ANALYTICS)
+
+class ProtobufRequest(BleWriteRequest):
+    def __init__(self, featureId, actionId, pbuf):
+        protoBytes = pbuf.SerializeToString()
+        value = bytes([len(protoBytes) + 2, featureId, actionId]) + protoBytes
+        super().__init__(
+            characteristic=ID2.CHAR_Command,
+            value = value
+        )
+
+class SetCameraControl(ProtobufRequest):
+    def __init__(self, pbuf):
+        super().__init__(featureId=0xF1, actionId=0x69, pbuf=pbuf)
+
 class SetDateTime(CommandRequest):
     def __init__(self, dtobj):
         super().__init__(CommandId.SET_DATE_TIME, bytes([
