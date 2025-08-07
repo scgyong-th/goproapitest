@@ -43,6 +43,7 @@ def test_status_values(cfg, ids):
     msg = camera.proceed_agw_test(req, cfg)
     if isinstance(ids, int):
         key = ids
+        print_key_value(key, msg['tlv'][key])
     else:
         for key in ids:
             assert key in msg['tlv'], f'{key=:02x}'
