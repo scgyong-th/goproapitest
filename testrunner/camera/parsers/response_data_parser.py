@@ -115,9 +115,9 @@ class QueryParser(Parser):
 
         print(f'next_tlv(), r={self.responseId}/{t=} {v=}')
         if self.responseId == camera.QueryId.GET_STATUS_VALUES:
-            if t in camera.StatusId.possible_values:
-                print(f' possible_values: {camera.StatusId.possible_values[t]}')
-                assert v in camera.StatusId.possible_values[t]
+            if t in camera.StatusId_possible_values:
+                print(f' possible_values: {camera.StatusId_possible_values[t]}')
+                assert v in camera.StatusId_possible_values[t]
 
         return t, v
 

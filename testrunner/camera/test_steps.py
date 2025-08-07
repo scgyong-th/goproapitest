@@ -1,5 +1,5 @@
 import requests
-from .constants import ID2
+from .constants import ID2, ID2_map
 from . import parsers
 
 def proceed_agw_test(req, cfg):
@@ -18,7 +18,7 @@ def proceed_agw_test(req, cfg):
 
     # 4. ID2 확인
     resp_id2 = resp["id2"]
-    expected_id2 = ID2.response[req.characteristic]
+    expected_id2 = ID2_map.response[req.characteristic]
     assert resp_id2 == expected_id2
 
     # 5. 패킷 조립

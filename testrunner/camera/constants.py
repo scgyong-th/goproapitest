@@ -1,5 +1,6 @@
+from enum import IntEnum, StrEnum
 
-class ID2:
+class ID2(StrEnum):
     # Services
     GP_0001 = "0001"  # GoPro Wifi Access Point
     GP_0090 = "0090"  # GoPro Camera Management
@@ -40,25 +41,26 @@ class ID2:
     SERVICE_WiFi_Access_Point = GP_0001
     SERVICE_Camera_Management = GP_0090
 
-    # Characteristic to Service Mapping
-    service = {
-        GP_0002: GP_0001,
-        GP_0003: GP_0001,
-        GP_0004: GP_0001,
-        GP_0005: GP_0001,
+# Characteristic to Service Mapping
+class ID2_map: pass
+ID2_map.service = {
+        ID2.GP_0002: ID2.GP_0001,
+        ID2.GP_0003: ID2.GP_0001,
+        ID2.GP_0004: ID2.GP_0001,
+        ID2.GP_0005: ID2.GP_0001,
 
-        GP_0091: GP_0090,
-        GP_0092: GP_0090,
-    }
+        ID2.GP_0091: ID2.GP_0090,
+        ID2.GP_0092: ID2.GP_0090,
+}
 
-    response = {
-        GP_0091: GP_0092,
-        GP_0072: GP_0073,
-        GP_0074: GP_0075,
-        GP_0076: GP_0077,
-    }
+ID2_map.response = {
+        ID2.GP_0091: ID2.GP_0092,
+        ID2.GP_0072: ID2.GP_0073,
+        ID2.GP_0074: ID2.GP_0075,
+        ID2.GP_0076: ID2.GP_0077,
+}
 
-class QueryId:
+class QueryId(IntEnum):
     GET_SETTING_VALUES = 0x12
     GET_STATUS_VALUES = 0x13
     GET_SETTING_CAPABILITIES = 0x32
@@ -75,7 +77,7 @@ class QueryId:
     ASYNC_STATUS_VALUE_NOTIFICATION = 0x93
     ASYNC_SETTING_CAPABILITY_NOTIFICATION = 0xA2
 
-class CommandId:
+class CommandId(IntEnum):
     SET_SHUTTER = 0x01
     SLEEP = 0x05
     SET_DATE_TIME = 0x0D
@@ -92,7 +94,7 @@ class CommandId:
     GET_OPEN_GOPRO_VERSION = 0x51
     KEEP_ALIVE = 0x5B
 
-class SettingId:
+class SettingId(IntEnum):
     VIDEO_RESOLUTION = 0x02
     FRAMES_PER_SECOND = 0x03
     VIDEO_TIMELAPSE_RATE = 0x05
@@ -145,7 +147,7 @@ class SettingId:
     MULTI_SHOT_FRAMING = 0xE9
     FRAME_RATE = 0xEA
 
-class StatusId:
+class StatusId(IntEnum):
     BATTERY_PRESENT = 0x01
     BATTERY_LEVEL_BARS = 0x02
     IS_OVERHEATING = 0x06
@@ -221,7 +223,7 @@ class StatusId:
 
 
 # generated from util/possible_value_extractor.py
-StatusId.possible_values = {
+StatusId_possible_values = {
     0x01: {  # Battery Present (1)
         0,  # False
         1,  # True

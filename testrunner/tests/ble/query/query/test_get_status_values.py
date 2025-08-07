@@ -35,6 +35,7 @@ import pytest
         camera.StatusId.ZOOM_WHILE_ENCODING_SUPPORTED,
         camera.StatusId.FLATMODE_ID,
         camera.StatusId.VIDEO_PRESET_ID,
+        camera.StatusId.TURBO_TRANSFER_ACTIVE,
     ]),
 ])
 def test_status_values(cfg, ids):
@@ -49,4 +50,4 @@ def test_status_values(cfg, ids):
                 print_key_value(key, msg['tlv'][key])
 
 def print_key_value(key, value):
-    print(f'TLV {key=:02x} {value=}')
+    print(f'TLV key={camera.StatusId(key).name}({key}/0x{key:02x}) {value=}')
