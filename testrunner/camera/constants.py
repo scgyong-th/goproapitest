@@ -147,6 +147,12 @@ class SettingId(IntEnum):
     MULTI_SHOT_FRAMING = 0xE9
     FRAME_RATE = 0xEA
 
+Setting_paramBytes = { # 여기에 없는 key 들은 모두 1 byte
+    SettingId.PHOTO_TIMELAPSE_RATE: 8,
+    SettingId.NIGHTLAPSE_RATE: 8,
+    SettingId.SCHEDULED_CAPTURE: 8,
+}
+
 class StatusId(IntEnum):
     BATTERY_PRESENT = 0x01
     BATTERY_LEVEL_BARS = 0x02
@@ -221,6 +227,517 @@ class StatusId(IntEnum):
     USB_CONTROL_STATE = 0x74
     SDCARD_TOTAL_CAPACITY_KB = 0x75
 
+# generated from util/possible_setting_value_extractor.py
+SettingId_possible_values = {
+    0x02: {  # Video Resolution (2)
+        1,  # 4K  HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        4,  # 2.7K    HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        6,  # 2.7K 4:3    HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        7,  # 1440    HERO9Black
+        9,  # 1080    HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        12,  # 720 HERO13Black
+        18,  # 4K 4:3  HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        24,  # 5K  HERO9Black
+        25,  # 5K 4:3  HERO10Black
+        26,  # 5.3K 8:7    HERO11BlackMini HERO11Black
+        27,  # 5.3K 4:3    HERO11BlackMini HERO11Black
+        28,  # 4K 8:7  HERO11BlackMini HERO11Black
+        35,  # 5.3K 21:9   HERO13Black
+        36,  # 4K 21:9 HERO13Black
+        37,  # 4K 1:1  HERO13Black
+        38,  # 900 HERO13Black
+        100,  # 5.3K    HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black
+        107,  # 5.3K 8:7 V2 HERO13Black HERO12Black
+        108,  # 4K 8:7 V2   HERO13Black HERO12Black
+        109,  # 4K 9:16 V2  HERO13Black HERO12Black
+        110,  # 1080 9:16 V2    HERO13Black HERO12Black
+        111,  # 2.7K 4:3 V2 HERO13Black HERO12Black
+        112,  # 4K 4:3 V2   HERO13Black
+        113,  # 5.3K 4:3 V2 HERO13Black
+    },
+    0x03: {  # Frames Per Second (3)
+        0,  # 240.0   HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        1,  # 120.0   HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        2,  # 100.0   HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        5,  # 60.0    HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        6,  # 50.0    HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        8,  # 30.0    HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        9,  # 25.0    HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        10,  # 24.0    HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        13,  # 200.0   HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        15,  # 400.0   HERO13Black
+        16,  # 360.0   HERO13Black
+        17,  # 300.0   HERO13Black
+    },
+    0x05: {  # Video Timelapse Rate (5)
+        0,  # 0.5 Seconds HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        1,  # 1 Second    HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        2,  # 2 Seconds   HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        3,  # 5 Seconds   HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        4,  # 10 Seconds  HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        5,  # 30 Seconds  HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        6,  # 60 Seconds  HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        7,  # 2 Minutes   HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        8,  # 5 Minutes   HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        9,  # 30 Minutes  HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        10,  # 60 Minutes  HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        11,  # 3 Seconds   HERO13Black HERO12Black
+    },
+    0x1E: {  # Photo Timelapse Rate (30)
+        11,  # 3 Seconds   HERO13Black HERO12Black
+        100,  # 60 Minutes  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        101,  # 30 Minutes  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        102,  # 5 Minutes   HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        103,  # 2 Minutes   HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        104,  # 60 Seconds  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        105,  # 30 Seconds  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        106,  # 10 Seconds  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        107,  # 5 Seconds   HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        108,  # 2 Seconds   HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        109,  # 1 Second    HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        110,  # 0.5 Seconds HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+    },
+    0x20: {  # Nightlapse Rate (32)
+        4,  # 4 Seconds   HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        5,  # 5 Seconds   HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        10,  # 10 Seconds  HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        15,  # 15 Seconds  HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        20,  # 20 Seconds  HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        30,  # 30 Seconds  HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        100,  # 60 Seconds  HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        120,  # 2 Minutes   HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        300,  # 5 Minutes   HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        1800,  # 30 Minutes  HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        3600,  # 60 Minutes  HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        3601,  # Auto    HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+    },
+    0x2B: {  # Webcam Digital Lenses (43)
+        0,  # Wide    HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        2,  # Narrow  HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        3,  # Superview   HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        4,  # Linear  HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+    },
+    0x3B: {  # Auto Power Down (59)
+        0,  # Never   HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        1,  # 1 Min   HERO13Black HERO12Black HERO11BlackMini HERO11Black
+        4,  # 5 Min   HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        6,  # 15 Min  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        7,  # 30 Min  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        11,  # 8 Seconds   HERO11BlackMini
+        12,  # 30 Seconds  HERO11BlackMini
+    },
+    0x53: {  # GPS (83)
+        0,  # Off HERO13Black HERO11Black HERO10Black HERO9Black
+        1,  # On  HERO13Black HERO11Black HERO10Black HERO9Black
+    },
+    0x58: {  # LCD Brightness (88)
+    },
+    0x5B: {  # LED (91)
+        0,  # Off HERO11BlackMini
+        2,  # On  HERO11BlackMini
+        3,  # All On  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        4,  # All Off HERO12Black HERO11Black HERO10Black HERO9Black
+        5,  # Front Off Only  HERO12Black HERO11Black HERO10Black HERO9Black
+        100,  # Back Only   HERO13Black
+    },
+    0x6C: {  # Video Aspect Ratio (108)
+        0,  # 4:3 HERO13Black HERO12Black
+        1,  # 16:9    HERO13Black HERO12Black
+        3,  # 8:7 HERO13Black HERO12Black
+        4,  # 9:16    HERO13Black HERO12Black
+        5,  # 21:9    HERO13Black
+        6,  # 1:1 HERO13Black
+    },
+    0x79: {  # Video Lens (121)
+        0,  # Wide    HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        2,  # Narrow  HERO13Black HERO10Black HERO9Black
+        3,  # Superview   HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        4,  # Linear  HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        7,  # Max SuperView   HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        8,  # Linear + Horizon Leveling   HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        9,  # HyperView   HERO13Black HERO12Black HERO11BlackMini HERO11Black
+        10,  # Linear + Horizon Lock   HERO13Black HERO12Black HERO11BlackMini HERO11Black
+        11,  # Max HyperView   HERO12Black
+        12,  # Ultra SuperView HERO13Black
+        13,  # Ultra Wide  HERO13Black
+        14,  # Ultra Linear    HERO13Black
+        104,  # Ultra HyperView HERO13Black
+    },
+    0x7A: {  # Photo Lens (122)
+        0,  # Wide 12 MP  HERO13Black
+        10,  # Linear 12 MP    HERO13Black
+        19,  # Narrow  HERO10Black HERO9Black
+        27,  # Wide 23 MP  HERO13Black
+        28,  # Linear 23 MP    HERO13Black
+        31,  # Wide 27 MP  HERO13Black
+        32,  # Linear 27 MP    HERO13Black
+        38,  # 13MP Linear HERO13Black
+        39,  # 13MP Wide   HERO13Black
+        40,  # 13MP Ultra Wide HERO13Black
+        41,  # Ultra Wide 12 MP    HERO13Black
+        44,  # 13MP Ultra Linear   HERO13Black
+        100,  # Max SuperView   HERO12Black HERO11Black HERO10Black HERO9Black
+        101,  # Wide    HERO12Black HERO11Black HERO10Black HERO9Black
+        102,  # Linear  HERO12Black HERO11Black HERO10Black HERO9Black
+    },
+    0x7B: {  # Time Lapse Digital Lenses (123)
+        19,  # Narrow  HERO10Black HERO9Black
+        31,  # Wide 27 MP  HERO13Black
+        32,  # Linear 27 MP    HERO13Black
+        100,  # Max SuperView   HERO10Black
+        101,  # Wide    HERO12Black HERO11Black HERO10Black HERO9Black
+        102,  # Linear  HERO12Black HERO11Black HERO10Black HERO9Black
+    },
+    0x7D: {  # Photo Output (125)
+        0,  # Standard    HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        1,  # Raw HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        2,  # HDR HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        3,  # SuperPhoto  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+    },
+    0x80: {  # Media Format (128)
+        13,  # Time Lapse Video    HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        20,  # Time Lapse Photo    HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        21,  # Night Lapse Photo   HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        26,  # Night Lapse Video   HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+    },
+    0x86: {  # Anti-Flicker (134)
+        0,  # NTSC    HERO13Black
+        1,  # PAL HERO13Black
+        2,  # 60Hz    HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        3,  # 50Hz    HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+    },
+    0x87: {  # Hypersmooth (135)
+        0,  # Off HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        1,  # Low HERO13Black HERO12Black HERO11BlackMini HERO11Black HERO9Black
+        2,  # High    HERO10Black HERO9Black
+        3,  # Boost   HERO11BlackMini HERO11Black HERO10Black HERO9Black
+        4,  # Auto Boost  HERO13Black HERO12Black HERO11BlackMini HERO11Black
+        100,  # Standard    HERO10Black
+    },
+    0x96: {  # Video Horizon Leveling (150)
+        0,  # Off HERO11Black
+        2,  # Locked  HERO11Black
+    },
+    0x97: {  # Photo Horizon Leveling (151)
+        0,  # Off HERO11Black
+        2,  # Locked  HERO11Black
+    },
+    0x9C: {  # Video Duration (156)
+        1,  # 15 Seconds  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        2,  # 30 Seconds  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        3,  # 1 Minute    HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        4,  # 5 Minutes   HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        5,  # 15 Minutes  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        6,  # 30 Minutes  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        7,  # 1 Hour  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        8,  # 2 Hours HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        9,  # 3 Hours HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        10,  # 5 Seconds   HERO13Black
+        100,  # No Limit    HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+    },
+    0x9D: {  # Multi Shot Duration (157)
+        1,  # 15 Seconds  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        2,  # 30 Seconds  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        3,  # 1 Minute    HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        4,  # 5 Minutes   HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        5,  # 15 Minutes  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        6,  # 30 Minutes  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        7,  # 1 Hour  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        8,  # 2 Hours HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        9,  # 3 Hours HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        100,  # No Limit    HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+    },
+    0xA2: {  # Max Lens (162)
+        0,  # Off HERO11Black HERO10Black HERO9Black
+        1,  # On  HERO11Black HERO10Black HERO9Black
+    },
+    0xA7: {  # HindSight (167)
+        2,  # 15 Seconds  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        3,  # 30 Seconds  HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+        4,  # Off HERO13Black HERO12Black HERO11Black HERO10Black HERO9Black
+    },
+    0xA8: {  # Scheduled Capture (168)
+        0,  # Is Scheduled Capture Enabled?   1
+        1,  # Is 24 hour format?  1
+    },
+    0xAB: {  # Photo Single Interval (171)
+        0,  # Off HERO13Black HERO12Black
+        2,  # 0.5s    HERO13Black HERO12Black
+        3,  # 1s  HERO13Black HERO12Black
+        4,  # 2s  HERO13Black HERO12Black
+        5,  # 5s  HERO13Black HERO12Black
+        6,  # 10s HERO13Black HERO12Black
+        7,  # 30s HERO13Black HERO12Black
+        8,  # 60s HERO13Black HERO12Black
+        9,  # 120s    HERO13Black HERO12Black
+        10,  # 3s  HERO13Black HERO12Black
+    },
+    0xAC: {  # Photo Interval Duration (172)
+        0,  # Off HERO13Black HERO12Black
+        1,  # 15 Seconds  HERO13Black HERO12Black
+        2,  # 30 Seconds  HERO13Black HERO12Black
+        3,  # 1 Minute    HERO13Black HERO12Black
+        4,  # 5 Minutes   HERO13Black HERO12Black
+        5,  # 15 Minutes  HERO13Black HERO12Black
+        6,  # 30 Minutes  HERO13Black HERO12Black
+        7,  # 1 Hour  HERO13Black HERO12Black
+        8,  # 2 Hours HERO13Black HERO12Black
+        9,  # 3 Hours HERO13Black HERO12Black
+    },
+    0xAD: {  # Video Performance Mode (173)
+        0,  # Maximum Video Performance   HERO10Black
+        1,  # Extended Battery    HERO10Black
+        2,  # Tripod / Stationary Video   HERO10Black
+    },
+    0xAF: {  # Control Mode (175)
+        0,  # Easy    HERO13Black HERO12Black HERO11Black
+        1,  # Pro HERO13Black HERO12Black HERO11Black
+    },
+    0xB0: {  # Easy Mode Speed (176)
+        0,  # 8X Ultra Slo-Mo HERO11Black
+        1,  # 4X Super Slo-Mo HERO11Black
+        2,  # 2X Slo-Mo   HERO11Black
+        3,  # 1X Speed (Low Light)    HERO11Black
+        4,  # 4X Super Slo-Mo (Ext. Batt.)    HERO11Black
+        5,  # 2X Slo-Mo (Ext. Batt.)  HERO11Black
+        6,  # 1X Speed (Ext. Batt.) (Low Light)   HERO11Black
+        7,  # 8X Ultra Slo-Mo (50Hz)  HERO11Black
+        8,  # 4X Super Slo-Mo (50Hz)  HERO11Black
+        9,  # 2X Slo-Mo (50Hz)    HERO11Black
+        10,  # 1X Speed (50Hz) (Low Light) HERO11Black
+        11,  # 4X Super Slo-Mo (50Hz) (Ext. Batt.) HERO11Black
+        12,  # 2X Slo-Mo (50Hz) (Ext. Batt.)   HERO11Black
+        13,  # 1X Speed (50Hz) (Ext. Batt.) (Low Light)    HERO11Black
+        14,  # 8X Ultra Slo-Mo (Ext. Batt.)    HERO11Black
+        15,  # 8X Ultra Slo-Mo (50Hz) (Ext. Batt.) HERO11Black
+        16,  # 8X Ultra Slo-Mo (Long. Batt.)   HERO11Black
+        17,  # 4X Super Slo-Mo (Long. Batt.)   HERO11Black
+        18,  # 2X Slo-Mo (Long. Batt.) HERO11Black
+        19,  # 1X Speed (Long. Batt.) (Low Light)  HERO11Black
+        20,  # 8X Ultra Slo-Mo (50Hz) (Long. Batt.)    HERO11Black
+        21,  # 4X Super Slo-Mo (50Hz) (Long. Batt.)    HERO11Black
+        22,  # 2X Slo-Mo (50Hz) (Long. Batt.)  HERO11Black
+        23,  # 1X Speed (50Hz) (Long. Batt.) (Low Light)   HERO11Black
+        24,  # 2X Slo-Mo (4K)  HERO11Black
+        25,  # 4X Super Slo-Mo (2.7K)  HERO11Black
+        26,  # 2X Slo-Mo (4K) (50Hz)   HERO11Black
+        27,  # 4X Super Slo-Mo (2.7K) (50Hz)   HERO11Black
+        100,  # 8X Ultra Slo-Mo (V2)    HERO13Black HERO12Black
+        101,  # 4X Super Slo-Mo (V2)    HERO13Black HERO12Black
+        102,  # 2X Slo-Mo (V2)  HERO13Black HERO12Black
+        103,  # 1X Speed (Low Light) (V2)   HERO13Black HERO12Black
+        104,  # 8X Ultra Slo-Mo (50Hz) (V2) HERO13Black HERO12Black
+        105,  # 4X Super Slo-Mo (50Hz) (V2) HERO13Black HERO12Black
+        106,  # 2X Slo-Mo (50Hz) (V2)   HERO13Black HERO12Black
+        107,  # 1X Speed (50Hz) (Low Light) (V2)    HERO13Black HERO12Black
+        108,  # 8X Ultra Slo-Mo (Long. Batt.) (V2)  HERO13Black HERO12Black
+        109,  # 4X Super Slo-Mo (Long. Batt.) (V2)  HERO13Black HERO12Black
+        110,  # 2X Slo-Mo (Long. Batt.) (V2)    HERO13Black HERO12Black
+        111,  # 1X Speed (Long. Batt.) (Low Light) (V2) HERO13Black HERO12Black
+        112,  # 8X Ultra Slo-Mo (50Hz) (Long. Batt.) (V2)   HERO13Black HERO12Black
+        113,  # 4X Super Slo-Mo (50Hz) (Long. Batt.) (V2)   HERO13Black HERO12Black
+        114,  # 2X Slo-Mo (50Hz) (Long. Batt.) (V2) HERO13Black HERO12Black
+        115,  # 1X Speed (50Hz) (Long. Batt.) (Low Light) (V2)  HERO13Black HERO12Black
+        116,  # 2X Slo-Mo (4K) (V2) HERO13Black HERO12Black
+        117,  # 2X Slo-Mo (4K) (50Hz) (V2)  HERO13Black HERO12Black
+        118,  # 1X Speed (Low Light) (V2) (Vertical)    HERO13Black HERO12Black
+        119,  # 1X Speed (50Hz) (Low Light) (V2) (Vertical) HERO13Black HERO12Black
+        120,  # 2X Slo-Mo (V2) (Vertical)   HERO13Black HERO12Black
+        121,  # 2X Slo-Mo (50Hz) (V2) (Vertical)    HERO13Black HERO12Black
+        122,  # 1X Speed (Full Frame) (Low Light) (V2)  HERO13Black HERO12Black
+        123,  # 1X Speed (50Hz) (Full Frame) (Low Light) (V2)   HERO13Black HERO12Black
+        124,  # 2X Slo-Mo (Full Frame) (V2) HERO13Black HERO12Black
+        125,  # 2X Slo-Mo (50Hz) (Full Frame) (V2)  HERO13Black HERO12Black
+        126,  # 1X Speed (4K) (Low Light) (V2)  HERO13Black HERO12Black
+        127,  # 1X Speed (4K) (50Hz) (Low Light) (V2)   HERO13Black HERO12Black
+        128,  # 1X Speed (2.7K) (Low Light) (V2)    HERO12Black
+        129,  # 1X Speed (2.7K) (50Hz) (Low Light) (V2) HERO12Black
+        130,  # 2X Slo-Mo (2.7K) (V2)   HERO12Black
+        131,  # 2X Slo-Mo (2.7K) (50Hz) (V2)    HERO12Black
+        132,  # 2X Slo-Mo (Long. Batt.) (V2) (Vertical) HERO13Black HERO12Black
+        133,  # 2X Slo-Mo (50Hz) (Long. Batt.) (V2) (Vertical)  HERO13Black HERO12Black
+        134,  # 1X Speed (Long. Batt.) (Low Light) (V2) (Vertical)  HERO13Black HERO12Black
+        135,  # 1X Speed (50Hz) (Long. Batt.) (Low Light) (V2) (Vertical)   HERO13Black HERO12Black
+        136,  # 1X Speed (4K) (Full Frame) (Low Light) (V2) HERO13Black HERO12Black
+        137,  # 1X Speed (4K) (50Hz) (Full Frame) (Low Light) (V2)  HERO13Black HERO12Black
+        138,  # 1X Normal Speed (1:1) (30 Fps) (4K) (V2)    HERO13Black
+        139,  # 1X Normal Speed (1:1) (25 Fps) (4K) (V2)    HERO13Black
+        140,  # 2X Slo-Mo Speed (1:1) (4K) (60 Fps) (V2)    HERO13Black
+        141,  # 2X Slo-Mo Speed (1:1) (4K) (50 Fps) (V2)    HERO13Black
+        142,  # 1X Normal Speed (21:9) (30 Fps) (5.3K) (V2) HERO13Black
+        143,  # 1X Normal Speed (21:9) (25 Fps) (5.3K) (V2) HERO13Black
+        144,  # 2X Slo-Mo Speed (21:9) (5.3K) (60 Fps) (V2) HERO13Black
+        145,  # 2X Slo-Mo Speed (21:9) (5.3K) (50 Fps) (V2) HERO13Black
+        146,  # 1X Normal Speed (21:9) (30 Fps) (4K) (V2)   HERO13Black
+        147,  # 1X Normal Speed (21:9) (25 Fps) (4K) (V2)   HERO13Black
+        148,  # 2X Slo-Mo Speed (21:9) (4K) (60 Fps) (V2)   HERO13Black
+        149,  # 2X Slo-Mo Speed (21:9) (4K) (50 Fps) (V2)   HERO13Black
+        150,  # 120 4X Super Slo-Mo Speed (21:9) (4K) (V2)  HERO13Black
+        151,  # 100 4X Super Slo-Mo Speed (21:9) (4K) (V2)  HERO13Black
+        152,  # 1X Normal Speed (30 Fps) (4:3) (5.3K) (V2)  HERO13Black
+        153,  # 1X Normal Speed (25 Fps) (4:3) (5.3K) (V2)  HERO13Black
+        154,  # 1X Normal Speed (30 Fps) (4:3) (4K) (V2)    HERO13Black
+        155,  # 1X Normal Speed (25 Fps) (4:3) (4K) (V2)    HERO13Black
+        156,  # 2X Slo-Mo Speed (4:3) (4K) (60 Fps) (V2)    HERO13Black
+        157,  # 2X Slo-Mo Speed (4:3) (4K) (50 Fps) (V2)    HERO13Black
+        158,  # 120 4X Super Slo-Mo Speed (2.7K) (4:3) (V2) HERO13Black
+        159,  # 100 4X Super Slo-Mo Speed (2.7K) (4:3) (V2) HERO13Black
+    },
+    0xB1: {  # Enable Night Photo (177)
+        0,  # Off HERO11Black
+        1,  # On  HERO11Black
+    },
+    0xB2: {  # Wireless Band (178)
+        0,  # 2.4GHz  HERO13Black HERO12Black HERO11BlackMini HERO11Black
+        1,  # 5GHz    HERO13Black HERO12Black HERO11BlackMini HERO11Black
+    },
+    0xB3: {  # Star Trails Length (179)
+        1,  # Short   HERO13Black HERO12Black HERO11BlackMini HERO11Black
+        2,  # Long    HERO13Black HERO12Black HERO11BlackMini HERO11Black
+        3,  # Max HERO13Black HERO12Black HERO11BlackMini HERO11Black
+    },
+    0xB4: {  # System Video Mode (180)
+        0,  # Highest Quality HERO13Black HERO11Black
+        101,  # Extended Battery    HERO11Black
+        102,  # Longest Battery HERO11Black
+        111,  # Standard Quality    HERO13Black
+        112,  # Basic Quality   HERO13Black
+    },
+    0xB6: {  # Video Bit Rate (182)
+        0,  # Standard    HERO13Black HERO12Black
+        1,  # High    HERO13Black HERO12Black
+    },
+    0xB7: {  # Bit Depth (183)
+        0,  # 8-Bit   HERO13Black HERO12Black
+        2,  # 10-Bit  HERO13Black HERO12Black
+    },
+    0xB8: {  # Profiles (184)
+        0,  # Standard    HERO13Black HERO12Black
+        1,  # HDR HERO13Black HERO12Black
+        2,  # Log HERO13Black HERO12Black
+        101,  # HLG HDR HERO13Black
+    },
+    0xBA: {  # Video Easy Mode (186)
+        0,  # Highest Quality HERO12Black
+        1,  # Standard Quality    HERO12Black
+        2,  # Basic Quality   HERO12Black
+        3,  # Standard Video  HERO13Black
+        4,  # HDR Video   HERO13Black
+    },
+    0xBB: {  # Lapse Mode (187)
+        0,  # TimeWarp    HERO13Black HERO12Black
+        1,  # Star Trails HERO13Black HERO12Black
+        2,  # Light Painting  HERO13Black HERO12Black
+        3,  # Vehicle Lights  HERO13Black HERO12Black
+        4,  # Max TimeWarp    HERO12Black
+        5,  # Max Star Trails HERO12Black
+        6,  # Max Light Painting  HERO12Black
+        7,  # Max Vehicle Lights  HERO12Black
+        8,  # Time Lapse Video    HERO13Black
+        9,  # Night Lapse Video   HERO13Black
+    },
+    0xBD: {  # Max Lens Mod (189)
+        0,  # None    HERO12Black
+        1,  # Max Lens 1.0    HERO12Black
+        2,  # Max Lens 2.0    HERO13Black HERO12Black
+        3,  # Max Lens 2.5    HERO13Black
+        4,  # Macro   HERO13Black
+        5,  # Anamorphic  HERO13Black
+        6,  # ND 4    HERO13Black
+        7,  # ND 8    HERO13Black
+        8,  # ND 16   HERO13Black
+        9,  # ND 32   HERO13Black
+        10,  # Standard Lens   HERO13Black
+        100,  # Auto Detect HERO13Black
+    },
+    0xBE: {  # Max Lens Mod Enable (190)
+        0,  # Off HERO12Black
+        1,  # On  HERO12Black
+    },
+    0xBF: {  # Easy Night Photo (191)
+        0,  # Super Photo HERO13Black HERO12Black
+        1,  # Night Photo HERO13Black HERO12Black
+        2,  # Burst   HERO13Black
+    },
+    0xC0: {  # Multi Shot Aspect Ratio (192)
+        0,  # 4:3 HERO13Black HERO12Black
+        1,  # 16:9    HERO13Black HERO12Black
+        3,  # 8:7 HERO13Black HERO12Black
+        4,  # 9:16    HERO13Black
+    },
+    0xC1: {  # Framing (193)
+        0,  # Widescreen  HERO12Black
+        1,  # Vertical    HERO12Black
+        2,  # Full Frame  HERO12Black
+        100,  # Traditional 4:3 v2  HERO13Black
+        101,  # Widescreen 16:9 v2  HERO13Black
+        103,  # Full Frame 8:7 v2   HERO13Black
+        104,  # Vertical 9:16 v2    HERO13Black
+        105,  # Ultra Widescreen 21:9 v2    HERO13Black
+        106,  # Full Frame 1:1 v2   HERO13Black
+    },
+    0xD8: {  # Camera Volume (216)
+        70,  # Low HERO13Black
+        85,  # Medium  HERO13Black
+        100,  # High    HERO13Black
+    },
+    0xDB: {  # Setup Screen Saver (219)
+        1,  # 1 Min   HERO13Black
+        2,  # 2 Min   HERO13Black
+        3,  # 3 Min   HERO13Black
+        4,  # 5 Min   HERO13Black
+    },
+    0xDF: {  # Setup Language (223)
+        0,  # English - US    HERO13Black
+        1,  # English - UK    HERO13Black
+        2,  # English - AUS   HERO13Black
+        3,  # German  HERO13Black
+        4,  # French  HERO13Black
+        5,  # Italian HERO13Black
+        6,  # Spanish HERO13Black
+        7,  # Spanish - NA    HERO13Black
+        8,  # Chinese HERO13Black
+        9,  # Japanese    HERO13Black
+        10,  # Korean  HERO13Black
+        11,  # Portuguese  HERO13Black
+        12,  # Russian HERO13Black
+        13,  # English - IND   HERO13Black
+        14,  # Swedish HERO13Black
+    },
+    0xE3: {  # Photo Mode (227)
+        0,  # SuperPhoto  HERO13Black
+        1,  # Night Photo HERO13Black
+        2,  # Burst   HERO13Black
+    },
+    0xE8: {  # Video Framing (232)
+        0,  # 4:3 HERO13Black
+        1,  # 16:9    HERO13Black
+        3,  # 8:7 HERO13Black
+        4,  # 9:16    HERO13Black
+        5,  # 21:9    HERO13Black
+        6,  # 1:1 HERO13Black
+    },
+    0xE9: {  # Multi Shot Framing (233)
+        0,  # 4:3 HERO13Black
+        1,  # 16:9    HERO13Black
+        3,  # 8:7 HERO13Black
+        4,  # 9:16    HERO13Black
+    },
+    0xEA: {  # Frame Rate (234)
+        0,  # 240.0   HERO13Black
+        1,  # 120.0   HERO13Black
+        2,  # 100.0   HERO13Black
+        5,  # 60.0    HERO13Black
+        6,  # 50.0    HERO13Black
+        8,  # 30.0    HERO13Black
+        9,  # 25.0    HERO13Black
+        10,  # 24.0    HERO13Black
+        13,  # 200.0   HERO13Black
+        15,  # 400.0   HERO13Black
+        16,  # 360.0   HERO13Black
+        17,  # 300.0   HERO13Black
+    },
+}
 
 # generated from util/possible_value_extractor.py
 StatusId_possible_values = {

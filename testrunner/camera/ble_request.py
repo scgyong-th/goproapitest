@@ -1,6 +1,6 @@
 import json
 from construct import Int16ub
-from .constants import CommandId, QueryId, SettingId, StatusId, ID2
+from .constants import CommandId, QueryId, SettingId, StatusId, ID2, Setting_paramBytes
 import proto
 
 class BleRequest:
@@ -218,6 +218,15 @@ class QueryRequest(BleWriteRequest):
             characteristic=ID2.CHAR_Query,
             value=payload,
             on_return=on_return
+        )
+
+class SetSettingValue(BleWriteRequest):
+    def __init__(self, settingId, value):
+        length = Setting_paramBytes[settingId] if settingId in Setting_paramBytes else 1
+        msg = bytes([length+2, settingId, length]) + value.to_bytes(length, byteorder='big')
+        super().__init__(
+            characteristic=ID2.CHAR_Settings,
+            value=msg
         )
 
 class GetSettingValues(QueryRequest):
