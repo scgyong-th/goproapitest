@@ -113,6 +113,23 @@ class SimpleHttpServer(private val context: Context, port: Int, val vm: MainMode
 
                 newFixedLengthResponse(json)
             }
+            uri.startsWith("/http/") -> {
+                val path = uri.substring(6)//        Regex("""/http/(\d{4})(?:/([^/]+))?$""").find(path)?.groupValues?.let { values ->
+                val latch = CountDownLatch(1)
+                var json = """{"error":"timeout"}"""
+
+                vm.sendHttpMessage(path) { resp ->
+                    json = resp
+                    Log.d("httpd", "$uri -> $json")
+                    latch.countDown()
+                }
+
+                // 최대 2초 기다리기
+                val completed = latch.await(2000, TimeUnit.MILLISECONDS)
+                Log.d("httpd", "$uri -> $json")
+
+                newFixedLengthResponse(json)
+            }
             uri == "/test" && method == Method.POST -> {
                 val body = session.inputStream.bufferedReader().readText()
                 println("Received POST body: $body")

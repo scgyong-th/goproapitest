@@ -41,3 +41,19 @@ def proceed_agw_test(req, cfg):
     print("Parsed Result:", msg)
 
     return msg
+
+
+def proceed_http_test(req, cfg):
+    url = f'{cfg.base_url}/{req.toForwardPath()}'
+    print(f"Request: {url}")
+
+    # 2. HTTP 요청
+    http_resp = requests.get(url)
+    assert http_resp.status_code == 200
+
+    try:
+        return http_resp.json()
+    except:
+        pass
+    
+    return http_resp.text()

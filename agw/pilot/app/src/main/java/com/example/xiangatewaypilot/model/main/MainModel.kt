@@ -265,6 +265,13 @@ class MainModel(app: Application): AndroidViewModel(app) {
         }, 5000)
     }
 
+    fun sendHttpMessage(url: String, onResult: ((String)->Unit)) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = httpClient.sendAPIMessage(url)
+            onResult(result)
+        }
+    }
+
     @SuppressLint("MissingPermission")
     private fun subscribeNextNotification() {
         if (notifyCharacteristics.isEmpty()) {

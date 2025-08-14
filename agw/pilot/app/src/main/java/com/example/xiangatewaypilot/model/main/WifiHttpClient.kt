@@ -46,6 +46,18 @@ class WifiHttpClient(val context: Context) {
         }
     }
 
+    suspend fun sendAPIMessage(url: String): String {
+        try {
+            val response = client.get("$BASE_URL/$url")
+            val body = response.body<String>()
+            Log.d("GoProHTTP", "✅ KeepAlive response: $body")
+            return body
+        } catch (e: Exception) {
+            Log.e("GoProHTTP", "❌ Failed to send $url: ${e.message}", e)
+            return "error: ${e.message}"
+        }
+    }
+
     fun connect(ssid: String, password: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             connectUsingNetworkSpecifier(ssid, password)
