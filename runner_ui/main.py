@@ -1,8 +1,16 @@
 import webview
-import os
+import os, sys
 
 import web_api
 from adb_bridge import AdbBridge
+
+def resource_path(rel_path):
+    """PyInstaller 환경/개발 환경 둘 다에서 파일 경로 얻기"""
+    if hasattr(sys, '_MEIPASS'):
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, rel_path)
 
 # Python 쪽에서 파일 선택 다이얼로그 열기
 def select_adb():
@@ -13,7 +21,8 @@ def select_adb():
 webApi = web_api.WebApi()
 webApi.adb = AdbBridge()
 
-html_path = os.path.abspath('res/main.html')
+# html_path = os.path.abspath('res/main.html')
+html_path = resource_path("res/main.html")
 print(html_path)
 
 window = webview.create_window(
