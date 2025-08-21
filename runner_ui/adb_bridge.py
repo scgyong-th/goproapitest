@@ -4,7 +4,8 @@ import re
 from types import SimpleNamespace
 
 class AdbBridge:
-    adb_path = '/Users/scgyong/Library/Android/sdk/platform-tools/adb'
+    # adb_path = '/Users/scgyong/Library/Android/sdk/platform-tools/adb'
+    adb_path = 'c:/Users/scgyong/AppData/Local/Android/Sdk/platform-tools/adb'
 
     def __init__(self):
         self.device = None
@@ -19,10 +20,11 @@ class AdbBridge:
             return
         lines = result.stdout.strip().splitlines()
         for line in lines[1:]:
+            print('line:', line)
             if not line.strip():
                 continue
             parts = line.split()
-            if len(parts) < 2 or parts[1] != "device":
+            if len(parts) < 3 or parts[0] in ["list", '*', 'adb']:
                 continue
             device_id = parts[0]
             if device_id.startswith('emulator-'):
@@ -61,13 +63,13 @@ class AdbBridge:
                 capture_output=True,
                 text=True
             )
-            return SimpleNamespace({
+            return SimpleNamespace(**{
                 "stdout": completed.stdout,
                 "stderr": completed.stderr,
                 "returncode": completed.returncode
             })
         except Exception as e:
-            return SimpleNamespace({
+            return SimpleNamespace(**{
                 "stdout": "",
                 "stderr": str(e),
                 "returncode": -1
