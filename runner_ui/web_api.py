@@ -2,14 +2,59 @@ import requests
 import threading
 import webbrowser
 import os, sys, subprocess, shlex
+import pytest
 
 window = None
 
+class Tee:
+    def __init__(self, window, orig):
+        self.window = window
+        self.orig = orig
+        # pytest가 참조할 수 있는 속성들
+        self.encoding = getattr(orig, "encoding", "utf-8")
+        self.errors   = getattr(orig, "errors", "replace")
+
+    # 필수: 텍스트 출력
+    def write(self, s):
+        if not s:
+            return 0
+        # 원래 콘솔에도 그대로 출력
+        self.orig.write(s)
+        # 줄 단위로 UI에 전달
+        for line in s.splitlines():
+            if line.strip():
+                self.window.evaluate_js(f"appendLog({line!r})")
+        return len(s)
+
+    def flush(self):
+        try:
+            self.orig.flush()
+        except Exception:
+            pass
+
+    # pytest/컬러 처리용 TTY 속성들
+    def isatty(self):
+        try:
+            return self.orig.isatty()
+        except Exception:
+            return False
+
+    def fileno(self):
+        # 일부 라이브러리가 fileno()를 호출
+        return self.orig.fileno()
+
+    # io.TextIOBase 호환성 (선택적이지만 도움이 됨)
+    def readable(self):  return False
+    def writable(self):  return True
+    def seekable(self):  return False
+    def close(self):     pass
+
+
 class WebApi:
     # pytest_path = '/Users/scgyong/myenv/bin/pytest'
-    def __init__(self):
-        # self.window = None
-        pass
+    def __init__(self, tests_path):
+        self.tests_path = tests_path
+        print(f'{tests_path=}')
     def log(self, *logs):
         print(f'Web: {logs}')
     def get_device_id(self):
@@ -48,7 +93,34 @@ class WebApi:
         except:
             return {"error":"app not ready"}
     
+    def run_pytest_inprocess(self):
+        def target():
+            orig_out, orig_err = sys.stdout, sys.stderr
+            # stdout/stderr를 Tee로 교체
+            orig_out, orig_err = sys.stdout, sys.stderr
+            args = [
+                self.tests_path,
+                "-q", "-v",
+                "--html=results/report.html",
+                "--self-contained-html",
+                '--metadata', 'Cam Info', str(self.cam),
+                '--metadata', 'App Info', str(self.app),
+            ]
+
+            sys.stdout = Tee(window, orig_out)
+            sys.stderr = Tee(window, orig_err)
+            try:
+                rc = pytest.main(args)
+            finally:
+                sys.stdout, sys.stderr = orig_out, orig_err
+                window.evaluate_js(f"appendLog('[exit code] {rc}')")
+
+        threading.Thread(target=target, daemon=True).start()
+
     def run_pytest(self):
+        self.run_pytest_inprocess()
+
+    def run_pytest_subprocess(self):
         def target():
             env = os.environ.copy()
             env['PYTHONUNBUFFERED'] = '1'
@@ -79,5 +151,5 @@ class WebApi:
         threading.Thread(target=target, daemon=True).start()
    
     def show_report(self):
-        html_path = os.path.abspath("../testrunner/results/report.html")  # 절대경로로 변환
+        html_path = os.path.abspath("results/report.html")  # 절대경로로 변환
         webbrowser.open(f"file://{html_path}")
