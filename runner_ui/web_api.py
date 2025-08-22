@@ -1,13 +1,15 @@
 import requests
-import subprocess
 import threading
 import webbrowser
-import os
+import os, sys, subprocess, shlex
+
+window = None
 
 class WebApi:
-    pytest_path = '/Users/scgyong/myenv/bin/pytest'
+    # pytest_path = '/Users/scgyong/myenv/bin/pytest'
     def __init__(self):
-        self.window = None
+        # self.window = None
+        pass
     def log(self, *logs):
         print(f'Web: {logs}')
     def get_device_id(self):
@@ -15,6 +17,7 @@ class WebApi:
             return ''
         return f'{self.adb.device} model:{self.adb.model}'
     def connect_agw(self):
+        print('connect_agw')
         self.adb.connect()
         if self.adb.device:
             print(f'Device: {self.adb.device} {self.adb.model}')
@@ -47,8 +50,12 @@ class WebApi:
     
     def run_pytest(self):
         def target():
+            env = os.environ.copy()
+            env['PYTHONUNBUFFERED'] = '1'
+            env['PYTHONPATH'] = '.'
             cmd = [
-                self.pytest_path, '-v', '--html=results/report.html',
+                sys.executable, '-u', '-m', 'pytest', '-q',
+                '-v', '--html=results/report.html',
                 '--metadata', 'Cam Info', str(self.cam),
                 '--metadata', 'App Info', str(self.app),
             ]
@@ -56,19 +63,19 @@ class WebApi:
             process = subprocess.Popen(
                 cmd,
                 cwd='../testrunner/',
-                env={'PYTHONPATH':'.'},
+                env=env,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,
                 bufsize=1
             )
             for line in process.stdout:
-                if self.window:
-                    self.window.evaluate_js(f"appendLog({repr(line.strip())})")
+                if window:
+                    window.evaluate_js(f"appendLog({repr(line.strip())})")
             process.stdout.close()
             process.wait()
-            if self.window:
-                self.window.evaluate_js(f"appendLog('[exit code] {process.returncode}')")
+            if window:
+                window.evaluate_js(f"appendLog('[exit code] {process.returncode}')")
         threading.Thread(target=target, daemon=True).start()
    
     def show_report(self):
