@@ -3,6 +3,11 @@ import threading
 import webbrowser
 import os, sys, subprocess, shlex
 import pytest
+# from pytest_html import plugin as pytest_html_plugin
+# from pytest_metadata.plugin import MetadataPlugin
+
+import pytest_html.plugin as pytest_html_plugin
+import pytest_metadata.plugin as metadata_plugin
 
 window = None
 
@@ -100,17 +105,26 @@ class WebApi:
             orig_out, orig_err = sys.stdout, sys.stderr
             args = [
                 self.tests_path,
+                "--rootdir", self.tests_path,
+                "--confcutdir", self.tests_path,
                 "-q", "-v",
+                "-p", "pytest_html",
+                "-p", "pytest_metadata",
                 "--html=results/report.html",
                 "--self-contained-html",
                 '--metadata', 'Cam Info', str(self.cam),
                 '--metadata', 'App Info', str(self.app),
             ]
 
+            print(args)
+
             sys.stdout = Tee(window, orig_out)
             sys.stderr = Tee(window, orig_err)
             try:
-                rc = pytest.main(args)
+                rc = pytest.main(args, plugins=[
+                    pytest_html_plugin,
+                    metadata_plugin
+                ])
             finally:
                 sys.stdout, sys.stderr = orig_out, orig_err
                 window.evaluate_js(f"appendLog('[exit code] {rc}')")
