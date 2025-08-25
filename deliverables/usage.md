@@ -3,10 +3,10 @@
 ## 실행 준비
 * Android Phone
   * `agw` 설치해 둘 것
-   * 방법 1: Binary Release Folder 를 Android Phone 에서 열고 .APK 파일 링크를 열어 직접 설치
-   * 방법 2: 아래 adb 설치 후 adb 를 이용하여 설치
-    * `adb` 가 `c:/Users/scgyong/AppData/Local/Android/Sdk/platform-tools/adb` 에 설치되어 있고
-    * app-release.apk 가 현재 폴더에 다운로드되어 있다고 가정하면 다음과 같이 `adb install` 명령어를 사용하여 설치 가능
+    * 방법 1: Binary Release Folder 를 Android Phone 에서 열고 .APK 파일 링크를 열어 직접 설치
+    * 방법 2: 아래 adb 설치 후 adb 를 이용하여 설치
+      * `adb` 가 `c:/Users/scgyong/AppData/Local/Android/Sdk/platform-tools/adb` 에 설치되어 있고
+      * app-release.apk 가 현재 폴더에 다운로드되어 있다고 가정하면 다음과 같이 `adb install` 명령어를 사용하여 설치 가능
       ```
        C:\Users\scgyong\Downloads>c:/Users/scgyong/AppData/Local/Android/Sdk/platform-tools/adb install app-release.apk
        C:\Users\scgyong\Downloads>
@@ -24,19 +24,19 @@
  
 ## Bluetooth 연결
 * GoPro 기기를 Pairing 준비 상태에 둠
- * 화면을 아래로 쓸어내려 `메뉴`가 나오게 함
-  * 초기화
-   * `메뉴` 에서 오른쪽으로 이동하여 `기본 설정` 진입
-   * `무선 연결` - `연결 초기화` 로 기존 연결 삭제
-  * `메뉴` 에서 `+페어링` 버튼을 눌러 Pairing 준비 상태로 진입
+  * 화면을 아래로 쓸어내려 `메뉴`가 나오게 함
+    * 초기화
+      * `메뉴` 에서 오른쪽으로 이동하여 `기본 설정` 진입
+      * `무선 연결` - `연결 초기화` 로 기존 연결 삭제
+    * `메뉴` 에서 `+페어링` 버튼을 눌러 Pairing 준비 상태로 진입
 * `agw` 를 실행시킨 뒤 `Scan` 을 하고 해당 디바이스가 나오면 `Connect`
   * 잘 연결된 후에는
     * `Device: { "modelNumber": "HERO13 Black", ... ` 등의 정보가 화면에 표시됨
     * 3초마다 Keep Alive BLE 시간이 표시됨
     * WiFi AP Mode 를 enable 시켜주고 (화면에 표시됨) Phone 을 Camera 의 WiFi 에 접속시킴
       * 기기에 따라 최초 연결시 연결을 허가하겠냐는 질문이 나올 수 있음.
-  * 연결을 한번만 하면 다음부터는 Scan 을 할 필요가 없으며 바로 Connect 를 할 수 있음
-    * 앱 실행이나 Connect 도 Runner 가 요청하기 때문에 화면을 조작할 일이 별로 
+* 연결을 한번만 하면 다음부터는 Scan 을 할 필요가 없으며 바로 Connect 를 할 수 있음
+  * 앱 실행이나 Connect 도 Runner 가 요청하기 때문에 화면을 조작할 일이 별로 
 
 ## PC-AGW 연결
 * USB-Data 케이블을 사용하여 Windows PC 와 Android Phone 을 연결. (충전 케이블로는 안됨)
