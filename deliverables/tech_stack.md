@@ -1,4 +1,5 @@
 # Technology Stack
+![GitHub tag (latest)](https://img.shields.io/github/v/tag/scgyong-th/goproapitest)
 
 ## Overview
 
