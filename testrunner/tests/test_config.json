@@ -1,5 +1,5 @@
 {
-    "base_url": "http://localhost:6502",
+    "base_url": "http://127.0.0.1:6502",
     "timeout": 5,
     "adb": "adb",
     "_adb": "c:/Users/scgyong/AppData/Local/Android/Sdk/platform-tools/adb"
