@@ -197,6 +197,31 @@
 
 ## Test Cases
 
+### 개발 및 실행 환경
+
+* 개발시 python 에 여러 module 들을 설치해야 하므로 `venv` 사용을 권장한다. `mingw`/`bash` 기준으로 다음과 같이 한다.
+  * venv 생성
+    ```
+    python -m venv ~/thenv
+    ```
+  * venv 활성화
+    ```
+    source ~/thenv/Scripts/activate
+    ```
+  * 개발시 필요한 모듈 설치
+    ```
+    pip install -r requirements.txt
+    ```
+* `runner_ui/requirements.txt` 에는 다음 모듈들이 포함되어 있다
+  * `pywebview` : runner 의 UI 를 HTML/CSS/Javascript 를 이용해서 보여줄 수 있도록한다
+  * `requests` : Runner `<->` AGW 사이에 http 호출을 할 때 이용한다
+  * `protobuf` : `.proto` binary 를 encode/decode 한다
+  * `construct` : `protubuf` 관련 활용
+  * `pytest` : Test Framework
+  * `pytest-html` : Test 결과물을 Formatting 할 때 사용하는 pytest plugin
+  * `allure-pytest` : Test 결과물 Formatting 옵션 (현재 버전에서 사용하지는 않음)
+  * `pyinstaller` : python 파일들을 windows exe 로 build
+
 ### tests 폴더 구조
 * `tests` 는 다음 폴더 구조를 가진다
 ```
@@ -257,4 +282,22 @@
     * OpenGoPro 문서 내의 좌측 분류를 따름
   * 그 아래 폴더 (`tests/ble/분류/*`)
     * 사용하는 Characteristic 에 따라 command/setting/status 등으로 구별
-  * 
+* test case 에서 import 하는 module 은 exe 에 자동으로 포함되지 않기 때문에, 후술하는 방법에 따라 `main.spec` 에 추가시켜주어야 한다. 유지보수를 위해서 `requirements.txt` 에도 추가해 주는 것이 좋다.
+
+### Runner 빌드
+
+* Runner 는 `PyInstaller` Module 을 사용하여 Windows exe 로 빌드한다
+* Windows Machine 에서만 빌드 가능하다
+* pyinstaller 에 여러 옵션을 주면 `.spec` 파일이 만들어지지만, 그 옵션이 `main.spec` 파일에 기록되어 생성되며, 이 파일에 옵션들을 유지한다.
+  * 옵션들 중 일부는 다음과 같다
+    * `datas` : 빌드에 포함된 뒤, 실행 직전에 _MEI 임시 폴더에 풀린 채로 시작한다. _MEI 폴더는 실행 후 삭제된다.
+    * `hiddenimports` : pyinstaller 는 `main.py` 로부터 import 되는 모듈들은 자동으로 추적하지만 test case 에서는 아니다. 따라서 test case 에서 import 할 모듈이 있다면 이곳에 포함시켜 주어야 한다.
+    * `console=True` : 기본적으로 콘솔을 포함한 빌드이다. 이것을 `False` 로 하여 끌 수 있다
+    * `icon` : Windows Exe 의 아이콘 파일을 지정한다
+* 다음 명령어로 빌드한다
+    ```
+    (thenv)
+    scgyong@scGyonG-PC MINGW64 /d/Develop/Thinkware/xian (main)
+    $ pyinstaller main.spec
+    ```
+* 빌드 후 `dist/main.exe` 파일이 만들어지므로, 버전명 등을 적용하여 배포한다
