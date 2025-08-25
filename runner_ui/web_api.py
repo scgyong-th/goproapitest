@@ -10,6 +10,7 @@ import pytest_html.plugin as pytest_html_plugin
 import pytest_metadata.plugin as metadata_plugin
 
 window = None
+config = None
 
 class Tee:
     def __init__(self, window, orig):
@@ -54,6 +55,10 @@ class Tee:
     def seekable(self):  return False
     def close(self):     pass
 
+add_args = { 
+    'timeout':(2,5), 
+    'proxies':{'http': None, 'https': None}
+}
 
 class WebApi:
     # pytest_path = '/Users/scgyong/myenv/bin/pytest'
@@ -79,7 +84,7 @@ class WebApi:
     def get_app_info(self):
         print('in get_app_info()')
         try:
-            resp = requests.get('http://localhost:6502/app/info')
+            resp = requests.get(f'{config.base_url}/app/info', **add_args)
             self.app = resp.json()
         except:
             return {"error":"app not ready"}
@@ -89,9 +94,9 @@ class WebApi:
     def connect_ble(self):
         print('in connect_ble()')
         try:
-            resp = requests.get('http://localhost:6502/app/connect')
+            resp = requests.get(f'{config.base_url}/app/connect', **add_args)
             print(f'Response from SimeHttpServer: {resp.text}')
-            resp = requests.get('http://localhost:6502/app/get_hardware_info')
+            resp = requests.get(f'{config.base_url}/app/get_hardware_info', **add_args)
             self.cam = resp.json()
             print(f'Response of get_hardware_info: {resp.json()}')
             return resp.json()

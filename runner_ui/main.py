@@ -4,7 +4,23 @@ from pathlib import Path
 import json
 from types import SimpleNamespace
 
-import web_api
+import traceback, datetime
+
+def _exhook(exctype, value, tb):
+    log = Path(os.getenv("LOCALAPPDATA", ".")) / "DashcamRunner_error.log"
+    with open(log, "a", encoding="utf-8") as f:
+        w.write(f"\n=== {datetime.datetime.now()} ===\n")
+        w.write(f"MEIPASS: {getattr(sys, '_MEIPASS', None)}\n")
+        w.write("sys.path:\n" + "\n ".join(exctype, value, tb, flie=f))
+    traceback.print_exception(exctype, value, tb)
+
+try:
+    import web_api
+except Exception as e:
+    print("import web_api failed:", repr(e))
+    traceback.print_exc()
+    raise
+
 from adb_bridge import AdbBridge
 
 def load_cfg():
@@ -28,8 +44,9 @@ def load_cfg():
     return {}
 
 cfg = load_cfg()
-print(cfg)
+# print(cfg)
 AdbBridge.adb_path = cfg.adb
+web_api.config = cfg
 
 def project_root() -> Path:
     # dev: xian/ (runner_ui/main.py의 부모의 부모)
