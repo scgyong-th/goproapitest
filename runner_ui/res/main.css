@@ -3,19 +3,19 @@ body {
 }
 
 #agw_app {
-    height: 5em;
+    height: 8em;
     font-family: monospace;
     resize: vertical;
 }
 
 #camera_device {
-    height: 5em;
+    height: 10em;
     font-family: monospace;
     resize: vertical;
 }
 
 #test_log {
-    height: 20em;
+    height: 10em;
     font-family: monospace;
     font-size: 0.8rem;
     resize: vertical;
