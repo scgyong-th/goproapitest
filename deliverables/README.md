@@ -1,15 +1,17 @@
 # Deliverables
+![GitHub tag (latest)](https://img.shields.io/github/v/tag/scgyong-th/goproapitest)
 
 ## Binaries
 * [Binary Release Folder](https://drive.google.com/drive/folders/1kAQskqzdHo-_QgkUVLul53IyHtvMZQQi?usp=sharing)
 
-### AGW
-* [Androd Gateway APK](https://drive.google.com/file/d/1VAwRZ9PLkdRh-IJ0neQFhnLu2b5R-EJD/view?usp=sharing)
+  * AGW
+    * [Androd Gateway APK](https://drive.google.com/file/d/1VAwRZ9PLkdRh-IJ0neQFhnLu2b5R-EJD/view?usp=sharing)
+    * https://drive.google.com/file/d/1VAwRZ9PLkdRh-IJ0neQFhnLu2b5R-EJD/view?usp=sharing
   
-### PC Runner
-
-* [xian.0.3.ex_](https://drive.google.com/file/d/1E-BwImrwDxZcndg0_0o8jJwWFk2m7861/view?usp=sharing)
-* 다운로드 후 확장자 `.ex_` 를 `.exe` 로 변경
+  * PC Runner
+    * [xian.0.3.ex_](https://drive.google.com/file/d/1E-BwImrwDxZcndg0_0o8jJwWFk2m7861/view?usp=sharing)
+    * https://drive.google.com/file/d/1E-BwImrwDxZcndg0_0o8jJwWFk2m7861/view?usp=sharing
+    * 다운로드 후 확장자 `.ex_` 를 `.exe` 로 변경
 
 ## Source Files
 * git repo
