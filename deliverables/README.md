@@ -1,14 +1,14 @@
 # Deliverables
 
 ## Binaries
-* https://drive.google.com/drive/folders/1kAQskqzdHo-_QgkUVLul53IyHtvMZQQi?usp=sharing
+* [Binary Release Folder](https://drive.google.com/drive/folders/1kAQskqzdHo-_QgkUVLul53IyHtvMZQQi?usp=sharing)
 
 ### AGW
-* https://drive.google.com/file/d/1VAwRZ9PLkdRh-IJ0neQFhnLu2b5R-EJD/view?usp=sharing
+* [Androd Gateway APK](https://drive.google.com/file/d/1VAwRZ9PLkdRh-IJ0neQFhnLu2b5R-EJD/view?usp=sharing)
   
 ### PC Runner
 
-* https://drive.google.com/file/d/1kGC4OEZYIAvN6i4p2VDDEpH3yYb14pUt/view?usp=sharing
+* [xian.0.3.ex_](https://drive.google.com/file/d/1E-BwImrwDxZcndg0_0o8jJwWFk2m7861/view?usp=sharing)
 * 다운로드 후 확장자 `.ex_` 를 `.exe` 로 변경
 
 ## Source Files
