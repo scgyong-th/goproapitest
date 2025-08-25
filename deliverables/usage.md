@@ -1,5 +1,7 @@
 # Test Framework 실행 방법
 
+![GitHub tag (latest)](https://img.shields.io/github/v/tag/scgyong-th/goproapitest)
+
 ## 실행 준비
 * Android Phone
   * `agw` 설치해 둘 것
@@ -50,7 +52,7 @@
  * `adb` 가 PATH 에 잡혀 있지 않으면 상단의 설명처럼 full path 로 적어야 할 수도 있음
 
 ## Runner 실행
-* `xian.0.4.exe` 실행.
+* `xian.0.3.exe` 실행.
    * <img width="300" alt="image" src="https://github.com/user-attachments/assets/6572c8dc-dea3-4bbf-9fdd-2d7043296cdf" />
    * 최초 실행시 Windows Defender 등에 의해 실행을 허용할지 여부를 물을수 있음. 
 * `adb` 설정이 제대로 되었다면 `Android:` 부분에 Serial Number 및 Model Name 이 표시됨
